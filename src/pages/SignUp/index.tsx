@@ -49,7 +49,7 @@ const SignUp: React.FC = () => {
         <>
             <Container>
                 <Presentation>
-                    <h2>The Geatest App</h2>
+                    <h2>The Greatest App</h2>
                     <span>for</span>
                     <h1>LOTTERY</h1>
                 </Presentation>
