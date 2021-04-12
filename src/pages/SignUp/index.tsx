@@ -1,15 +1,18 @@
 import React, { useCallback, useRef } from 'react';
 import * as Yup from  'yup';
 import getValidationErrors from '../../utils/getValidationErrors';
-import {Link} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import { FiArrowRight, FiArrowLeft } from 'react-icons/fi'
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import Footer from '../../components/Footer';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
+import { useDispatch } from 'react-redux';
+
 
 import { Container, Content,  Presentation } from './styles';
+import { signUpAuth } from '../../store/modules/auth/action';
 
 interface SignUpFormData {
     name: string;
@@ -18,6 +21,10 @@ interface SignUpFormData {
 }
 
 const SignUp: React.FC = () => {
+
+    const dispatch = useDispatch();
+
+    const history = useHistory();
 
     const formRef = useRef<FormHandles>(null);
 
@@ -35,7 +42,13 @@ const SignUp: React.FC = () => {
                     abortEarly: false,
                 });
 
-                return console.log(data.email, data.password)
+                dispatch(signUpAuth({
+                    name: data.name,
+                    email: data.email,
+                    password : data.password,
+                }));
+
+                history.push('/');
             }catch(err){
                 if (err instanceof Yup.ValidationError) {
                     const errors = getValidationErrors(err);
@@ -43,7 +56,7 @@ const SignUp: React.FC = () => {
                     return;
                 }
             }
-    },[])
+    },[dispatch, history])
 
     return (
         <>

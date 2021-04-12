@@ -4,13 +4,14 @@ import Footer from '../../components/Footer';
 import api from '../../server/api';
 import ButtonGames from '../../components/ButtonGames';
 
-import { 
-    Container, 
-    Content, 
-    Title, 
-    SectionGame, 
+// import Numbers from '../../components/Numbers';
+import {
+    Container,
+    Content,
+    Title,
+    SectionGame,
     Cart,
-    ButtonGamesDiv, 
+    ButtonGamesDiv,
 } from './styles';
 
 interface GamesProps {
@@ -29,20 +30,24 @@ const NewBet: React.FC = () => {
     //state of games
     const [games, setGames] = useState<GamesProps[]>([]);
     //state of game selected to user
-    const [gameSelected, setGameSelected] = useState('');
+    const [gameSelected, setGameSelected] = useState('LOTOFÁCIL');
 
-    const [infoGame , setInfoGame] = useState<GamesProps[]>([]);
+    const [infoGame, setInfoGame] = useState<GamesProps[]>([]);
+
+    // const [count, setCount] = useState(0);
 
     const handleClickedInButtonGame = useCallback((gameName: string) => {
         setGameSelected(gameName);
         setActive(true);
     }, []);
 
+
+
+
     useEffect(() => {
-        games.filter(game => gameSelected === game.type);
-        setInfoGame(games.filter(game => {return gameSelected === game.type}));
-    },[games, gameSelected])
- 
+        setInfoGame(games.filter(game => { return gameSelected === game.type }));
+    }, [games, gameSelected]);
+
     useEffect(() => {
         api.get('/types').then(
             response => {
@@ -64,7 +69,7 @@ const NewBet: React.FC = () => {
                         {games.map(game => (
                             <ButtonGames
                                 onClick={() => handleClickedInButtonGame(game.type)}
-                                isActive={gameSelected === game.type ? active: false }
+                                isActive={gameSelected === game.type ? active : false}
                                 type='button'
                                 key={game.type}
                                 color={game.color}
@@ -73,8 +78,12 @@ const NewBet: React.FC = () => {
                     </ButtonGamesDiv>
                     <span>Fill your bet</span>
                     {infoGame.map(game => (
-                        <p key={game.type}>{game.description}</p>    
+                        <div key={game.type}>
+                            <p>{game.description}</p>
+                            
+                        </div>
                     ))}
+                    
                 </SectionGame>
                 <Content>
                     <Cart><h1>Cart</h1></Cart>

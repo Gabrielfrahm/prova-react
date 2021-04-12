@@ -1,15 +1,21 @@
 import React, { useCallback, useRef } from 'react';
 import * as Yup from 'yup';
-import { Link} from 'react-router-dom';
+import { Link, useHistory} from 'react-router-dom';
 import { FiArrowRight } from 'react-icons/fi'
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import Footer from '../../components/Footer';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
+import { useDispatch, useSelector } from 'react-redux';
 
 import getValidationErrors from '../../utils/getValidationErrors';
 import { Container, Content, Presentation } from './styles';
+import { signInFailure, signInSuccess } from '../../store/modules/auth/action';
+import { IState } from '../../store';
+// import { UserState } from '../../store/modules/auth/types';
+
+
 
 interface SignInFormData {
     email: string;
@@ -17,7 +23,16 @@ interface SignInFormData {
 }
 
 const SignIn: React.FC = () => {
-    // const history = useHistory();
+    const history = useHistory();
+
+    const dispatch = useDispatch();
+
+    // const state= useSelector<IState>(state => {
+    //     if(state.users.users !== ''){
+    //         return state.users.erro;
+    //     }
+    // } )
+    
 
     const formRef = useRef<FormHandles>(null);
 
@@ -35,15 +50,21 @@ const SignIn: React.FC = () => {
                     abortEarly: false,
                 });
 
-                return console.log(data.email, data.password)
+                dispatch(signInSuccess({
+                    email: data.email,
+                    password: data.password
+                }));
+                // console.log(state);
+
             } catch (err) {
                 if (err instanceof Yup.ValidationError) {
                     const errors = getValidationErrors(err);
                     formRef.current?.setErrors(errors);
+                    dispatch(signInFailure(String(err)))
                     return;
                 }
             }
-        }, []);
+        }, [dispatch]);
 
         
     return (
@@ -56,6 +77,7 @@ const SignIn: React.FC = () => {
                 </Presentation>
                 <Content>
                     <Form ref={formRef} onSubmit={handleSubmit}>
+                        {/* {state && <span>error</span>} */}
                         <h1>Authentication</h1>
                         <div>
                             <Input name="email" placeholder="Email" />

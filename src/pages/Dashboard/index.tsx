@@ -5,8 +5,12 @@ import ButtonGames from '../../components/ButtonGames';
 import Footer from '../../components/Footer';
 import api from '../../server/api';
 
-import { Container, Content, Title, Button } from './styles';
+// import { useDispatch, useSelector } from 'react-redux';
 import Menu from '../../components/Menu';
+import { Container, Content, Title, Button } from './styles';
+// import { loadGames } from '../../store/modules/games/action';
+// import { IState } from '../../store';
+// import { GamesItem } from '../../store/modules/games/types';
 
 interface GamesProps {
     type: string;
@@ -18,7 +22,15 @@ interface GamesProps {
     'max-number': number;
 }
 
+
+
 const Dashboard: React.FC = () => {
+    // const dispatch = useDispatch();
+
+    // const state = useSelector<IState, GamesItem[]>(state => state.games.games);
+
+    
+    
     //state of active button 
     const [active, setActive] = useState(false);
     //state of games of json
@@ -27,28 +39,32 @@ const Dashboard: React.FC = () => {
     const [gameSelected, setGameSelected] = useState('');
 
     const history = useHistory();
+    
+    
 
     
     const handleClickedInButtonGame = useCallback((gameName: string) => {
         setGameSelected(gameName);
         console.log(gameName)
         setActive(true);
-    }, []);
+    }, []); 
 
     useEffect(() => {
         api.get('/types').then(
             response => {
                 setGames(response.data);
             }
-        ).catch(err => {
+        ).catch(err => { 
             console.log(err);
         })
     }, []);
 
+    
+
     const handleToClickInNewBet = useCallback(()=> {
         history.push('/new-bet')
     },[history])
-
+  
     return (
         <>
             <Menu />
