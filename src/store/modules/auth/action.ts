@@ -9,10 +9,9 @@ export function signUpAuth(user: User){
     }
 }
 
-
 export function signInRequest(user: Auth){
     return {
-        type: ActionTypes.signIn,
+        type: ActionTypes.signInRequest,
         payload: {
             user,
         }

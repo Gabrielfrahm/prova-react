@@ -11,9 +11,9 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import getValidationErrors from '../../utils/getValidationErrors';
 import { Container, Content, Presentation } from './styles';
-import { signInFailure, signInSuccess } from '../../store/modules/auth/action';
+import { signInRequest } from '../../store/modules/auth/action';
 import { IState } from '../../store';
-// import { UserState } from '../../store/modules/auth/types';
+
 
 
 
@@ -27,11 +27,11 @@ const SignIn: React.FC = () => {
 
     const dispatch = useDispatch();
 
-    // const state= useSelector<IState>(state => {
-    //     if(state.users.users !== ''){
-    //         return state.users.erro;
-    //     }
-    // } )
+    const state= useSelector<IState>(state => {
+        if(state.auth.erro !== ''){
+            return state.auth.erro;
+        }
+    } )
     
 
     const formRef = useRef<FormHandles>(null);
@@ -50,21 +50,21 @@ const SignIn: React.FC = () => {
                     abortEarly: false,
                 });
 
-                dispatch(signInSuccess({
+                dispatch(signInRequest({
                     email: data.email,
                     password: data.password
                 }));
-                // console.log(state);
+                
+                history.push('/dashboard')
 
             } catch (err) {
                 if (err instanceof Yup.ValidationError) {
                     const errors = getValidationErrors(err);
                     formRef.current?.setErrors(errors);
-                    dispatch(signInFailure(String(err)))
                     return;
                 }
             }
-        }, [dispatch]);
+        }, [dispatch, history]);
 
         
     return (
@@ -77,8 +77,8 @@ const SignIn: React.FC = () => {
                 </Presentation>
                 <Content>
                     <Form ref={formRef} onSubmit={handleSubmit}>
-                        {/* {state && <span>error</span>} */}
                         <h1>Authentication</h1>
+                        {state && <span style={{color: 'red'}}>'{state}'</span>}
                         <div>
                             <Input name="email" placeholder="Email" />
                             <Input name="password" type="password" placeholder="Password" />

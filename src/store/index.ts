@@ -8,7 +8,7 @@ import { UserState } from './modules/auth/types';
 
 export interface IState {
     games: GamesState;
-    users: UserState;
+    auth: UserState;
 }
 
 const sagaMiddleware = createSagaMiddleware();
@@ -22,6 +22,6 @@ const store = createStore(
     )
 )
 
-
 sagaMiddleware.run(rootSaga);
+
 export default store;

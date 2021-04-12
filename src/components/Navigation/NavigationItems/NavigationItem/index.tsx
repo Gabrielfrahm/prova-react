@@ -10,7 +10,7 @@ type LinkProps = LinkHTMLAttributes<HTMLLinkElement> & {
 const NavigationItem: React.FC<LinkProps> = ({children, to, exact,}) => {
     return (
         <Li>
-            <NavLink to={to} exact >
+            <NavLink to={to} >
                 {children}
             </NavLink>
         </Li>

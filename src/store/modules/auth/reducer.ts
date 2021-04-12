@@ -8,7 +8,7 @@ const INICIAL_STATE: UserState = {
         email: '',
         password: '',
     },
-    erro: '',
+    erro: '' ,
 }
 
 const auth : Reducer<UserState> = (state =INICIAL_STATE, action) => {
@@ -34,15 +34,14 @@ const auth : Reducer<UserState> = (state =INICIAL_STATE, action) => {
                 const checkUSer = draft.users.find(u => (
                     u.email  === user.email && u.password === user.password
                 ));
-
+                
                 if(checkUSer){
                     draft.auth.email = user.email;
                     draft.auth.password = user.password;
-                }else{
-                    draft.erro = 'user not existing';
+                    draft.erro = '';
                 }
-
-                break;
+                localStorage.setItem('@user', JSON.stringify(user))
+                break;  
             }
             case ActionTypes.signInFailure: {
                 const {error}= action.payload;

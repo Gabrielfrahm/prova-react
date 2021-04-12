@@ -1,6 +1,7 @@
 import {all, put, select, takeLatest} from 'redux-saga/effects';
+import { IState } from '../..';
 import { signInRequest, signInFailure, signInSuccess } from './action';
-import { ActionTypes, UserState } from './types';
+import { ActionTypes } from './types';
 
 
 type checkUserRequest = ReturnType<typeof signInRequest>;
@@ -8,11 +9,11 @@ type checkUserRequest = ReturnType<typeof signInRequest>;
 function* checkUser({payload}: checkUserRequest){
     const {user} = payload;
 
-    const check: UserState = yield select((state: UserState) => {
-        return state.users.find(u =>  u.email  === user.email && u.password === user.password)
+    const check: boolean = yield select((state: IState) => {
+        return state.auth.users.find(us => us.email === user.email && us.password === user.password);
     });
 
-    if(check){
+    if(check !== undefined){
         yield put(signInSuccess(user))
     }else {
         yield put(signInFailure('erro ao fazer login, check suas credenciais'));
@@ -20,5 +21,5 @@ function* checkUser({payload}: checkUserRequest){
 }
 
 export default all([
-    takeLatest(ActionTypes.signIn, checkUser),
+    takeLatest(ActionTypes.signInRequest, checkUser),
 ]) 

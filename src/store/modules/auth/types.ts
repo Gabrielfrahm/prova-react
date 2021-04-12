@@ -1,6 +1,6 @@
 export enum ActionTypes {
     signUp = 'SIGN_UP',
-    signIn = 'SIGN_IN',
+    signInRequest = 'SIGN_IN',
     signInSuccess = 'SIGN_IN_SUCCESS',
     signInFailure = 'SIGN_IN_FAILURE',
 }
