@@ -2,13 +2,15 @@ import React, { useCallback, useRef } from 'react';
 import * as Yup from 'yup';
 import getValidationErrors from '../../utils/getValidationErrors';
 import {Link} from 'react-router-dom';
-import { FiArrowRight, FiArrowLeft } from 'react-icons/fi'
+import { FiArrowRight, FiArrowLeft, FiAlertCircle } from 'react-icons/fi'
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import Footer from '../../components/Footer';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
+import { useSelector } from 'react-redux';
+import { IState } from '../../store';
 import { Container, Content,  Presentation } from './styles';
 
 interface RestPasswordFormData {
@@ -18,6 +20,12 @@ interface RestPasswordFormData {
 const ResetPassword: React.FC = () => {
 
     const formRef = useRef<FormHandles>(null);
+
+    const state= useSelector<IState>(state => {
+        if(state.auth.erro !== ''){
+            return state.auth.erro;
+        }
+    } )
 
     const handleSubmit = useCallback(
         async (data: RestPasswordFormData) => {
@@ -44,13 +52,17 @@ const ResetPassword: React.FC = () => {
         <>
             <Container>
                 <Presentation>
-                    <h2>The Geatest App</h2>
+                    <h2>The Greatest App</h2>
                     <span>for</span>
                     <h1>LOTTERY</h1>
                 </Presentation>
                 <Content>
                     <Form ref={formRef} onSubmit={handleSubmit}>
                         <h1>Reset password</h1>
+                        {state && 
+                            <p style={{color: 'red', display: 'flex', alignItems: 'center', flexDirection: 'column', fontSize: '12px'}}>
+                                <FiAlertCircle size={40} /> {state}
+                            </p>}
                         <div>
                             <Input name="email"  placeholder="Email" />
                             <Button type="submit">Send Link  <FiArrowRight  style={{verticalAlign: 'middle'}} /></Button>

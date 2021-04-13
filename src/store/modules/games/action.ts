@@ -1,8 +1,8 @@
-import {GamesProps} from './types';
+import {ActionTypes, GamesProps} from './types';
 
 export function loadGames(games: GamesProps){
     return {
-        type: 'LOADING_GAMES',
+        type: ActionTypes.loadGames,
         payload: {
             games,
         }

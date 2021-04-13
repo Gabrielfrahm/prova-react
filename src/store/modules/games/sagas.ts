@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { all, takeLatest, call, put } from 'redux-saga/effects';
 import api from '../../../server/api';
+import { ActionTypes } from './types';
 import { loadGames } from './action';
 import { GamesProps } from './types';
 
@@ -20,5 +21,5 @@ function* checkLoadGames({payload}: checkLoadGamesRequest) {
 }
 
 export default all([
-    takeLatest('LOADING_GAMES', checkLoadGames),
+    takeLatest(ActionTypes.loadGames, checkLoadGames),
 ])

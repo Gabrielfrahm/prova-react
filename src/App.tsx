@@ -6,15 +6,17 @@ import store from './store/index';
 
 
 import Global from './styles/global'
+
 const App: React.FC = () => {
   return (
     <Provider store={store}>
-      <BrowserRouter>
-        <Routes />
-        <Global />
-      </BrowserRouter>
+
+        <BrowserRouter>
+          <Routes />
+          <Global />
+        </BrowserRouter>
+
     </Provider>
-    
   )
 }
 

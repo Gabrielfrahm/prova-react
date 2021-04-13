@@ -1,10 +1,28 @@
 import {ActionTypes, Auth, User} from './types';
 
-export function signUpAuth(user: User){
+export function signUpRequest(user: User){
     return {
-        type: ActionTypes.signUp,
+        type: ActionTypes.signUpRequest,
         payload: {
             user,
+        }
+    }
+}
+
+export function signUpSuccess(user: User){
+    return {
+        type: ActionTypes.signUpSuccess,
+        payload: {
+            user,
+        }
+    }
+}
+
+export function signUpFailure(error: string){
+    return {
+        type: ActionTypes.signUpFailure,
+        payload: {
+            error,
         }
     }
 }

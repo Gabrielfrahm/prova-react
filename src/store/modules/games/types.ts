@@ -1,3 +1,7 @@
+export enum ActionTypes {
+    loadGames = 'LOAD_GAMES',
+}
+
 export interface GamesProps {
     type: string;
     color: string;

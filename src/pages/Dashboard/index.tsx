@@ -5,12 +5,11 @@ import ButtonGames from '../../components/ButtonGames';
 import Footer from '../../components/Footer';
 import api from '../../server/api';
 
-// import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Menu from '../../components/Menu';
+import { loadGames } from '../../store/modules/games/action';
+import { IState } from '../../store';
 import { Container, Content, Title, Button } from './styles';
-// import { loadGames } from '../../store/modules/games/action';
-// import { IState } from '../../store';
-// import { GamesItem } from '../../store/modules/games/types';
 
 interface GamesProps {
     type: string;
@@ -25,9 +24,9 @@ interface GamesProps {
 
 
 const Dashboard: React.FC = () => {
-    // const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
-    // const state = useSelector<IState, GamesItem[]>(state => state.games.games);
+    const state = useSelector<IState>(state => state.games.games);
 
     
     
@@ -40,26 +39,24 @@ const Dashboard: React.FC = () => {
 
     const history = useHistory();
     
-    
-
-    
     const handleClickedInButtonGame = useCallback((gameName: string) => {
         setGameSelected(gameName);
         console.log(gameName)
         setActive(true);
     }, []); 
 
+    console.log(state);
+
     useEffect(() => {
         api.get('/types').then(
             response => {
-                setGames(response.data);
+                setGames(response.data)
             }
         ).catch(err => { 
             console.log(err);
         })
     }, []);
 
-    
 
     const handleToClickInNewBet = useCallback(()=> {
         history.push('/new-bet')

@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import * as Yup from 'yup';
 import { Link, useHistory} from 'react-router-dom';
-import { FiArrowRight } from 'react-icons/fi'
+import { FiAlertCircle, FiArrowRight } from 'react-icons/fi'
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import Footer from '../../components/Footer';
@@ -78,7 +78,10 @@ const SignIn: React.FC = () => {
                 <Content>
                     <Form ref={formRef} onSubmit={handleSubmit}>
                         <h1>Authentication</h1>
-                        {state && <span style={{color: 'red'}}>'{state}'</span>}
+                        {state && 
+                            <p style={{color: 'red', display: 'flex', alignItems: 'center', flexDirection: 'column', fontSize: '12px'}}>
+                                <FiAlertCircle size={40} /> {state}
+                            </p>}
                         <div>
                             <Input name="email" placeholder="Email" />
                             <Input name="password" type="password" placeholder="Password" />
