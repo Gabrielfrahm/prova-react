@@ -5,11 +5,13 @@ import ButtonGames from '../../components/ButtonGames';
 import Footer from '../../components/Footer';
 import api from '../../server/api';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Menu from '../../components/Menu';
-import { loadGames } from '../../store/modules/games/action';
-import { IState } from '../../store';
+
+// import { IState } from '../../store';
 import { Container, Content, Title, Button } from './styles';
+import { loadGames } from '../../store/modules/games/action';
+// import {GamesItem, GamesState } from '../../store/modules/games/types';
 
 interface GamesProps {
     type: string;
@@ -26,14 +28,11 @@ interface GamesProps {
 const Dashboard: React.FC = () => {
     const dispatch = useDispatch();
 
-    const state = useSelector<IState>(state => state.games.games);
 
-    
-    
     //state of active button 
     const [active, setActive] = useState(false);
     //state of games of json
-    const [games, setGames] = useState<GamesProps[]>([]);
+    const [bet, setBet] = useState<GamesProps[]>([]);
     //state of game selected to user
     const [gameSelected, setGameSelected] = useState('');
 
@@ -41,24 +40,23 @@ const Dashboard: React.FC = () => {
     
     const handleClickedInButtonGame = useCallback((gameName: string) => {
         setGameSelected(gameName);
-        console.log(gameName)
         setActive(true);
     }, []); 
 
-    console.log(state);
-
-    useEffect(() => {
+    useEffect(() => { 
         api.get('/types').then(
             response => {
-                setGames(response.data)
+                setBet(response.data)
+                dispatch(loadGames(response.data))
             }
+            
         ).catch(err => { 
             console.log(err);
         })
-    }, []);
+    }, [dispatch]);
 
 
-    const handleToClickInNewBet = useCallback(()=> {
+    const handleToClickInNewBet = useCallback(()=> { 
         history.push('/new-bet')
     },[history])
   
@@ -69,7 +67,7 @@ const Dashboard: React.FC = () => {
                 <Content>
                     <Title>RECENT GAMES</Title>
                     <span>Filters</span>
-                    {games.map(game => (
+                    {bet.map(game => (
                         <ButtonGames
                             onClick={() => handleClickedInButtonGame(game.type)}
                             isActive={gameSelected === game.type ? active: false }
