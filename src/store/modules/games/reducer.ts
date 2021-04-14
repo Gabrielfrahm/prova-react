@@ -4,6 +4,7 @@ import producer from 'immer';
 import { ActionTypes } from "./types";
 const INITIAL_STATE: GamesState = {
     games: [],
+    error: false,
 }
 
 const gamesModules: Reducer<GamesState> = (state = INITIAL_STATE, action) => {
@@ -11,7 +12,16 @@ const gamesModules: Reducer<GamesState> = (state = INITIAL_STATE, action) => {
         switch (action.type) {
             case ActionTypes.loadGamesSuccess: {
                 const {bet} = action.payload;
-                draft.games.push(bet);
+                if(draft.games){
+                    draft.games = [];
+                    draft.games = [...bet];
+                    draft.error = false;
+                }
+                break;
+            }
+            case ActionTypes.loadGamesSFailure: {
+                const {error} = action.payload;
+                draft.error = error;
                 break;
             }
             default:

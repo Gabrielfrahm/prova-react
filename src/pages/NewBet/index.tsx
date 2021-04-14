@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Menu from '../../components/Menu';
 import Footer from '../../components/Footer';
-import api from '../../server/api';
 import ButtonGames from '../../components/ButtonGames';
 
 // import Numbers from '../../components/Numbers';
+import { GamesProps } from '../../store/modules/games/types';
+import {  useSelector } from 'react-redux';
+import { IState } from '../../store';
 import {
     Container,
     Content,
@@ -14,21 +16,18 @@ import {
     ButtonGamesDiv,
 } from './styles';
 
-interface GamesProps {
-    type: string;
-    color: string;
-    description: string;
-    range: number;
-    price: number;
-    'min-cart-value': number;
-    'max-number': number;
-}
 
 const NewBet: React.FC = () => {
+    const errorState = useSelector<IState>(state => {
+        return state.games.error;
+    });
+
+    const betsState = useSelector<IState, GamesProps[]>(state => {
+        return state.games.games;
+    });
+
     //state of active button 
     const [active, setActive] = useState(false);
-    //state of games
-    const [games, setGames] = useState<GamesProps[]>([]);
     //state of game selected to user
     const [gameSelected, setGameSelected] = useState('LOTOFÁCIL');
 
@@ -45,18 +44,10 @@ const NewBet: React.FC = () => {
 
 
     useEffect(() => {
-        setInfoGame(games.filter(game => { return gameSelected === game.type }));
-    }, [games, gameSelected]);
+        setInfoGame(betsState.filter(game => { return gameSelected === game.type }));
+    }, [betsState, gameSelected]);
 
-    useEffect(() => {
-        api.get('/types').then(
-            response => {
-                setGames(response.data);
-            }
-        ).catch(err => {
-            console.log(err);
-        })
-    }, []);
+    
 
     return (
         <>
@@ -66,21 +57,23 @@ const NewBet: React.FC = () => {
                     <Title><strong>NEW BET</strong> FOR {gameSelected.toUpperCase()}</Title>
                     <span>Choose a game</span>
                     <ButtonGamesDiv>
-                        {games.map(game => (
-                            <ButtonGames
-                                onClick={() => handleClickedInButtonGame(game.type)}
-                                isActive={gameSelected === game.type ? active : false}
-                                type='button'
-                                key={game.type}
-                                color={game.color}
-                            >{game.type}</ButtonGames>
-                        ))}
+                        {!errorState 
+                            ? betsState.map(game => (
+                                <ButtonGames
+                                    onClick={() => handleClickedInButtonGame(game.type)}
+                                    isActive={gameSelected === game.type ? active : false}
+                                    type='button'
+                                    key={game.type}
+                                    color={game.color}
+                                >{game.type}</ButtonGames>
+                            ))
+                            : <p>erro ao carregar os jogos</p>
+                        }
                     </ButtonGamesDiv>
                     <span>Fill your bet</span>
                     {infoGame.map(game => (
                         <div key={game.type}>
                             <p>{game.description}</p>
-                            
                         </div>
                     ))}
                     

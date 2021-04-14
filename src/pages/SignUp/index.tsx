@@ -19,7 +19,9 @@ interface SignUpFormData {
 }
 
 const SignUp: React.FC = () => {
+   
     const dispatch = useDispatch();
+
     const state = useSelector<IState>(state => {
         if(state.auth.erro !== ''){
             return state.auth.erro;

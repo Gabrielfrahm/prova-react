@@ -1,11 +1,9 @@
 import {ActionTypes, GamesProps} from './types';
 
-export function loadGames(bet : GamesProps){
+export function loadGames(){
     return {
         type: ActionTypes.loadGames,
-        payload: {
-            bet,
-        }
+        
     };
 }
 
@@ -14,6 +12,14 @@ export function loadGamesSuccess(bet : GamesProps ){
         type: ActionTypes.loadGamesSuccess,
         payload: {
             bet,
+        }
+    };
+}
+export function loadGamesFailure(error : boolean ){
+    return {
+        type: ActionTypes.loadGamesSuccess,
+        payload: {
+            error,
         }
     };
 }

@@ -1,65 +1,49 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import {useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { FiArrowRight } from 'react-icons/fi';
 import ButtonGames from '../../components/ButtonGames';
 import Footer from '../../components/Footer';
-import api from '../../server/api';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Menu from '../../components/Menu';
 
-// import { IState } from '../../store';
+import { IState } from '../../store';
 import { Container, Content, Title, Button } from './styles';
 import { loadGames } from '../../store/modules/games/action';
-// import {GamesItem, GamesState } from '../../store/modules/games/types';
-
-interface GamesProps {
-    type: string;
-    color: string;
-    description: string;
-    range: number;
-    price: number;
-    'min-cart-value': number;
-    'max-number': number;
-}
-
-
+import { GamesProps } from '../../store/modules/games/types';
 
 const Dashboard: React.FC = () => {
+    const errorState = useSelector<IState>(state => {
+        return state.games.error;
+    });
+
+    const betsState = useSelector<IState, GamesProps[]>(state => {
+        return state.games.games;
+    });
+
     const dispatch = useDispatch();
-
-
     //state of active button 
     const [active, setActive] = useState(false);
     //state of games of json
-    const [bet, setBet] = useState<GamesProps[]>([]);
+    // const [bet, setBet] = useState<GamesProps[]>([]);
     //state of game selected to user
     const [gameSelected, setGameSelected] = useState('');
 
     const history = useHistory();
-    
+
     const handleClickedInButtonGame = useCallback((gameName: string) => {
         setGameSelected(gameName);
         setActive(true);
-    }, []); 
+    }, []);
 
-    useEffect(() => { 
-        api.get('/types').then(
-            response => {
-                setBet(response.data)
-                dispatch(loadGames(response.data))
-            }
-            
-        ).catch(err => { 
-            console.log(err);
-        })
-    }, [dispatch]);
+    useEffect(() => {
+        dispatch(loadGames());
+    },[dispatch]);
 
-
-    const handleToClickInNewBet = useCallback(()=> { 
+    const handleToClickInNewBet = useCallback(() => {
         history.push('/new-bet')
-    },[history])
-  
+    }, [history])
+
     return (
         <>
             <Menu />
@@ -67,17 +51,20 @@ const Dashboard: React.FC = () => {
                 <Content>
                     <Title>RECENT GAMES</Title>
                     <span>Filters</span>
-                    {bet.map(game => (
-                        <ButtonGames
-                            onClick={() => handleClickedInButtonGame(game.type)}
-                            isActive={gameSelected === game.type ? active: false }
-                            type='button'
-                            key={game.type}
-                            color={game.color}
-                        >
-                            {game.type}
-                        </ButtonGames>
-                    ))}
+                    {!errorState
+                        ? betsState.map(game => (
+                            <ButtonGames
+                                onClick={() => handleClickedInButtonGame(game.type)}
+                                isActive={gameSelected === game.type ? active : false}
+                                type='button'
+                                key={game.type}
+                                color={game.color}
+                            >
+                                {game.type}
+                            </ButtonGames>
+                        ))
+                        : <p>Erro ao carregar os jogos</p>
+                    }
                     <Button onClick={handleToClickInNewBet}>New Bet <FiArrowRight style={{ verticalAlign: 'middle' }} /></Button>
                 </Content>
             </Container>
