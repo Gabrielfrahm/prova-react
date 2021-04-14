@@ -15,8 +15,6 @@ import { signInRequest } from '../../store/modules/auth/action';
 import { IState } from '../../store';
 
 
-
-
 interface SignInFormData {
     email: string;
     password: string;

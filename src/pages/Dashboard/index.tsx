@@ -1,15 +1,15 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { FiArrowRight } from 'react-icons/fi';
 import ButtonGames from '../../components/ButtonGames';
 import Footer from '../../components/Footer';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Menu from '../../components/Menu';
 
 import { IState } from '../../store';
 import { Container, Content, Title, Button } from './styles';
-import { loadGames } from '../../store/modules/games/action';
+// import { loadGames } from '../../store/modules/games/action';
 import { GamesProps } from '../../store/modules/games/types';
 
 const Dashboard: React.FC = () => {
@@ -21,7 +21,7 @@ const Dashboard: React.FC = () => {
         return state.games.games;
     });
 
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     //state of active button 
     const [active, setActive] = useState(false);
     //state of games of json
@@ -36,9 +36,9 @@ const Dashboard: React.FC = () => {
         setActive(true);
     }, []);
 
-    useEffect(() => {
-        dispatch(loadGames());
-    },[dispatch]);
+    // useEffect(() => {
+    //     dispatch(loadGames());
+    // },[dispatch]);
 
     const handleToClickInNewBet = useCallback(() => {
         history.push('/new-bet')
