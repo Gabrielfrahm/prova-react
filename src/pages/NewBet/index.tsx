@@ -27,7 +27,7 @@ import {
 } from './styles';
 
 const NewBet: React.FC = () => {
-
+    
     const errorState = useSelector<IState>(state => {//error of api state
         return state.games.error;
     });
@@ -45,6 +45,8 @@ const NewBet: React.FC = () => {
     const [gameSelected, setGameSelected] = useState('');//state of game selected to user
 
     const [infoGame, setInfoGame] = useState<GamesProps[]>([]);//initial game and game selected
+    const colorGame = infoGame.map(game => { return game.color });
+
 
     const [numbers, setNumbers] = useState<number[]>([]);//get numbers of range bet
 
@@ -65,54 +67,68 @@ const NewBet: React.FC = () => {
     }, []);
 
     const handleGenerateBet = useCallback(() => {
-        const range = infoGame.map(game => { return game.range});
-        const limit = infoGame.map(game => game['max-number']);
+        let bet: number[] = [];
+        const range = infoGame.map(game => { return game.range });
+        const limit = infoGame.map(game => { return game['max-number'] });
         let arrLength = Number(limit) - numbersUser.length;
-        
         if (numbersUser.length > 0) {
             for (let i = 1; i <= arrLength; i++) {
                 let number = Math.ceil(Math.random() * Number(range));
-                let check = numbersUser.some(item => {
+                let check = bet.some(item => {
+                    return item === number;
+                });
+                let check2 = numbersUser.some(item => {
                     return item === number;
                 })
-                if (check) {
+              
+                if (check|| check2) {
                     i--;
                 } else {
-                    console.log(number);
-                    setNumbersUser([...numbersUser, number]);
+                    bet.push(number);
                 }
             }
-            return numbersUser;
+            bet = bet.concat(numbersUser);
+            setNumbersUser(bet);
+            return bet;
         }
 
         for (let i = 1; i <= Number(limit); i++) {
             let number = Math.ceil(Math.random() * Number(range));
-            let check = numbersUser.some(item => {
+            let check = bet.some(item => {
                 return item === number;
             });
-            if (check) {
+
+            let check2 = numbersUser.some(item => {
+                return item === number;
+            })
+           
+            if (check || check2) {
                 i--;
             } else {
-                setNumbersUser([...numbersUser, number]);
+                bet.push(number);
             }
         }
-        return numbersUser;
+        setNumbersUser(bet);
+        return bet;
     }, [numbersUser, infoGame]);
 
-    const handleUserChoseNumber = useCallback((e)=> {
+    const handleUserChoseNumber = useCallback((e) => {
         const limit = infoGame.map(game => game['max-number']);
-        if(numbersUser.length < Number(limit) ){
-            if(e.target.value){
-                setNumbersUser([...numbersUser, e.target.value])
+        const check = numbersUser.find(numb => numb === Number(e.target.value));
+        if (numbersUser.length < Number(limit)) {
+
+            if (check) {
+                alert('voce ja tem esse numero')
+            } else {
+                setNumbersUser([...numbersUser, Number(e.target.value)]);
             }
+
         }
-    },[numbersUser, infoGame]);
+    }, [numbersUser, infoGame]);
 
-    const handleClearGame = useCallback(()=> {
+    const handleClearGame = useCallback(() => {
         setNumbersUser([]);
-    },[]);
-
-    console.log(numbersUser);
+    }, []);
 
     useEffect(() => {//initial bet
         setInfoGame([initialGame]);
@@ -126,8 +142,6 @@ const NewBet: React.FC = () => {
     useEffect(() => {//run function generate numbers of game
         handleGenerateNumbers(Number(infoGame.map(game => game?.range)));
     }, [infoGame, handleGenerateNumbers]);
-
-
 
     return (
         <>
@@ -159,7 +173,12 @@ const NewBet: React.FC = () => {
                         ))}
                         <DivNumbers >
                             {numbers.map(num => (
-                                <Numbers onClick={handleUserChoseNumber} value={num} color='' key={num.valueOf()} valueNumber={num} />
+                                <Numbers
+                                    onClick={handleUserChoseNumber}
+                                    value={num}
+                                    color={numbersUser.some(item => item === num) ? String(colorGame) : ''}
+                                    key={num.valueOf()}
+                                    valueNumber={num} />
                             ))}
                         </DivNumbers>
                         <ButtonsDiv>

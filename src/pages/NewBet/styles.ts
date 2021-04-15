@@ -1,3 +1,4 @@
+import { shade } from 'polished';
 import styled from 'styled-components';
 
 
@@ -7,12 +8,18 @@ export const Container = styled.div`
     display: flex;
     justify-content: space-around;
     align-items: stretch;
+
+    
 `;
 
 export const Content = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-around;
+
+    @media (max-width: 1024px){
+        flex-direction: column;
+    } 
 `;
 
 export const SectionGame = styled.section`
@@ -36,6 +43,10 @@ export const SectionGame = styled.section`
         font-weight: bold;
         color: #868686;
     }
+
+    @media (max-width: 700px){
+        align-items: center;
+    }
 `;
 
 export const Title = styled.h1`
@@ -53,7 +64,7 @@ export const Title = styled.h1`
     }
 
     @media (max-width: 600px){
-        margin-top: 80px;
+        
     }
 `;
 
@@ -64,6 +75,15 @@ export const ButtonGamesDiv = styled.div`
     button {
         margin: 0 25px 0 0;
     }
+
+    @media (max-width: 700px){
+        flex-direction: column;
+        justify-content: center;
+
+        button {
+            margin : 2px 0
+        }
+    }
 `;
 
 export const GameDescription = styled.div`
@@ -72,6 +92,13 @@ export const GameDescription = styled.div`
     font-size: 17px;
     color: #868686;
     margin-bottom: 20px;
+
+    @media(max-width:700px){
+        max-width: 500px;
+    }
+    @media(max-width:500px){
+        max-width: 300px;
+    }
 `;
 
 export const DivNumbers = styled.div`
@@ -79,11 +106,27 @@ export const DivNumbers = styled.div`
     height: 100%;
     display: flex;
     flex-wrap: wrap;
+
+    @media (max-width: 700px){
+        width: 500px;
+        justify-content: center;
+    }
+
+    @media (max-width: 400px){
+        width: 300px;
+        justify-content: center;
+    }
 `;
 
 export const ButtonsDiv = styled.div`
     display: flex;
     margin-top: 30px;
+
+    @media (max-width: 700px){
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
 `;
 
 export const ButtonsGenerate = styled.button`
@@ -98,6 +141,16 @@ export const ButtonsGenerate = styled.button`
     margin-right: 25px ;
     font-weight: bold;
     margin-bottom: 80px;
+
+    &:hover{
+        color: #fff;
+        background-color: #27C383
+    }
+
+    @media (max-width: 700px) {
+        margin: 20px 0 20px 0;
+        padding:0;
+    }
 `;
 
 
@@ -112,6 +165,15 @@ export const ButtonAddCart = styled.button`
     border-radius: 10px;
     margin-left: 59px ;
     font-weight: bold;
+
+    &:hover{
+        background-color: ${shade(0.2, '#27C383')}
+    }
+
+    @media (max-width: 700px) {
+        margin: 20px 0 20px 0;
+        padding:0;
+    }
 `;
 
 export const SectionCart = styled.section`
