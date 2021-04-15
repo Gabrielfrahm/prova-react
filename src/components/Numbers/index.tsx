@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { ButtonHTMLAttributes } from 'react';
 
 import { Container } from './styles';
-interface NumberProps {
+
+type NumberProps = ButtonHTMLAttributes<HTMLButtonElement> & {
     valueNumber: Number;
+    color?: string;
 }
 
-const Numbers: React.FC<NumberProps> = ({ valueNumber, children }) => {
+const Numbers: React.FC<NumberProps> = ({ valueNumber, color,  ...rest}) => {
     return (
-        <Container>
+        <Container  type="button" {...rest} color={color}>
             {valueNumber}
         </Container>
     )
