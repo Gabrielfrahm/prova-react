@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 
 export const Container = styled.div`
-    height: 85vh;
+    height: 100%;
     width: 100vw;
     display: flex;
     justify-content: space-around;
@@ -10,14 +10,19 @@ export const Container = styled.div`
 `;
 
 export const Content = styled.div`
-    display: flex; 
-    justify-content: center;
+    display: flex;
     align-items: center;
-    padding: 80px;
-    flex: 1;
+    justify-content: space-around;
+`;
+
+export const SectionGame = styled.section`
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
 `;
 
 export const Title = styled.h1`
+    margin-top: 50px;
     font-size: 25px;
     font-style: italic;
     font-weight: lighter;
@@ -35,25 +40,6 @@ export const Title = styled.h1`
     }
 `;
 
-export const SectionGame = styled.div`
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 77px 0 0 200px;
-    max-width: 900px;
-
-    span {
-        margin-top: 33px;
-        font-size: 17px;
-        font-weight: bold;
-        font-style: italic;
-        color: #868686;
-        margin-bottom: 20px;
-    }
-
-    
-`;
-
 export const ButtonGamesDiv = styled.div`
     display: flex;
     align-items: center;
@@ -63,10 +49,75 @@ export const ButtonGamesDiv = styled.div`
     }
 `;
 
-export const Cart = styled.div`
+export const GameDescription = styled.div`
+    font-style: italic;
+    max-width: 648px;
+    font-size: 17px;
+    color: #868686;
+    margin-top: 28px;
+    margin-bottom: 20px;
+`;
+
+export const DivNumbers = styled.div`
+    width: 600px;
+    height: 100%;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    padding: 20px;
+    flex-wrap: wrap;
+`;
+
+export const SectionCart = styled.section`
+    margin-top: 41px;
+    position: relative;
+    width: 317px;
+    background-color: #FFFFFF;
+    border: 1px solid #E2E2E2;
+    border-radius: 10px;
+`;
+
+export const CartTittle = styled.h1`
+    color: #707070;
+    font-size:28px;
+    font-weight: bold;
+    margin: 32px 19px;
+`;
+
+export const TotalDiv = styled.div`
+    display: flex;
+    font-size: 28px;
+    margin: 19px;
+    color: #707070;
+`;
+
+export const FinalText = styled.p`
+    margin-left: 10px;
+    font-size: 24px;
+    font-weight: 100;
+`;
+
+export const FinalButton = styled.button`
+    width: 100%;
+    height: 96px;
+    border: none;
+    border-radius: 10px;
+    color: #27C383;
+    font-size: 32px;
+    font-weight: bold;
+`;
+
+export const ButtonsDiv = styled.div`
+    display: flex;
+    margin-top: 30px;
+`;
+
+export const ButtonsGenerate= styled.button`
+     width: 164px;
+    height: 52px;
+    color: #27C383;
+    font-size: 15px;
+    padding: 16px;
+    border: 1px solid #27C383;
+    background: transparent;
+    border-radius: 10px;
+    margin-right: 25px ;
+    font-weight: bold;
 `;

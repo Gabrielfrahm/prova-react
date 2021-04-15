@@ -1,16 +1,15 @@
 import React from 'react';
 
-// interface NumberProps {
-//     range: number;
-// }
+import { Container } from './styles';
+interface NumberProps {
+    valueNumber: Number;
+}
 
-const Numbers : React.FC = () => {
-   
-
+const Numbers: React.FC<NumberProps> = ({ valueNumber, children }) => {
     return (
-        <div>
-            1
-        </div>
+        <Container>
+            {valueNumber}
+        </Container>
     )
 }
 
