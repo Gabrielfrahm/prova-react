@@ -5,10 +5,12 @@ import RootReducer from './modules/RootReducer';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import rootSaga from './modules/rootSaga';
 import { UserState } from './modules/auth/types';
+import { CartIState } from './modules/itemCart/type';
 
 export interface IState {
     games: GamesState;
     auth: UserState;
+    itemCart: CartIState;
 }
 
 const sagaMiddleware = createSagaMiddleware();

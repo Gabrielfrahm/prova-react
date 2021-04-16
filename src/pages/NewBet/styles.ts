@@ -183,6 +183,10 @@ export const SectionCart = styled.section`
     background-color: #FFFFFF;
     border: 1px solid #E2E2E2;
     border-radius: 10px;
+
+    @media (max-width: 1024px){
+        margin-bottom: 20px;
+    }
 `;
 
 export const CartTittle = styled.h1`
@@ -214,3 +218,5 @@ export const FinalButton = styled.button`
     font-size: 32px;
     font-weight: bold;
 `;
+
+

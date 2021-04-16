@@ -5,7 +5,7 @@ import ButtonGames from '../../components/ButtonGames';
 
 import Numbers from '../../components/Numbers';
 import { GamesProps } from '../../store/modules/games/types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { IState } from '../../store';
 import { FiArrowRight, FiShoppingCart } from 'react-icons/fi';
 import {
@@ -23,11 +23,15 @@ import {
     FinalButton,
     ButtonsDiv,
     ButtonsGenerate,
-    ButtonAddCart
+    ButtonAddCart,
 } from './styles';
+import ItemCart from '../../components/ItemCart';
+import { addProductToCartRequest } from '../../store/modules/itemCart/action';
+import { Item } from '../../store/modules/itemCart/type';
+import { formatValue } from '../../utils/formatValue';
 
 const NewBet: React.FC = () => {
-    
+
     const errorState = useSelector<IState>(state => {//error of api state
         return state.games.error;
     });
@@ -40,13 +44,23 @@ const NewBet: React.FC = () => {
         return state.games.games[0];
     });
 
+    const itemInCart = useSelector<IState, Item[]>(state => {
+        return state.itemCart.items;
+    })
+
+    const cartPrice = useSelector<IState>(state => {
+        return state.itemCart.price;
+    })
+
+    const dispatch = useDispatch();
+
     const [active, setActive] = useState(false); //state of active button 
 
     const [gameSelected, setGameSelected] = useState('');//state of game selected to user
 
     const [infoGame, setInfoGame] = useState<GamesProps[]>([]);//initial game and game selected
-    const colorGame = infoGame.map(game => { return game.color });
 
+    const colorGame = infoGame.map(game => { return game.color });//color game selected
 
     const [numbers, setNumbers] = useState<number[]>([]);//get numbers of range bet
 
@@ -80,8 +94,8 @@ const NewBet: React.FC = () => {
                 let check2 = numbersUser.some(item => {
                     return item === number;
                 })
-              
-                if (check|| check2) {
+
+                if (check || check2) {
                     i--;
                 } else {
                     bet.push(number);
@@ -101,7 +115,7 @@ const NewBet: React.FC = () => {
             let check2 = numbersUser.some(item => {
                 return item === number;
             })
-           
+
             if (check || check2) {
                 i--;
             } else {
@@ -112,23 +126,33 @@ const NewBet: React.FC = () => {
         return bet;
     }, [numbersUser, infoGame]);
 
-    const handleUserChoseNumber = useCallback((e) => {
+    const handleUserChoseNumber = useCallback((e) => {//user selected number 
         const limit = infoGame.map(game => game['max-number']);
         const check = numbersUser.find(numb => numb === Number(e.target.value));
+        if (numbersUser.length === Number(limit)) {
+            alert('atingiu o limit')
+        }
         if (numbersUser.length < Number(limit)) {
-
             if (check) {
                 alert('voce ja tem esse numero')
-            } else {
-                setNumbersUser([...numbersUser, Number(e.target.value)]);
             }
-
+            setNumbersUser([...numbersUser, Number(e.target.value)]);
         }
     }, [numbersUser, infoGame]);
 
-    const handleClearGame = useCallback(() => {
+    const handleClearGame = useCallback(() => {//limpa o jogo 
         setNumbersUser([]);
     }, []);
+
+    const handleAddGameCart = useCallback(() => {
+        dispatch(addProductToCartRequest({
+            color: String(colorGame),
+            numbers: numbersUser.sort().join(','),
+            type: String(infoGame.map(game => game.type)),
+            price: Number(infoGame.map(game => game.price))
+        }))
+        setNumbersUser([]);
+    }, [dispatch, colorGame, infoGame, numbersUser])
 
     useEffect(() => {//initial bet
         setInfoGame([initialGame]);
@@ -184,14 +208,25 @@ const NewBet: React.FC = () => {
                         <ButtonsDiv>
                             <ButtonsGenerate onClick={handleGenerateBet}>Complete game</ButtonsGenerate>
                             <ButtonsGenerate onClick={handleClearGame}>Clear game</ButtonsGenerate>
-                            <ButtonAddCart><FiShoppingCart size={25} style={{ verticalAlign: 'middle', marginRight: 10 }} /> Add to cart</ButtonAddCart>
+                            <ButtonAddCart onClick={handleAddGameCart}><FiShoppingCart size={25} style={{ verticalAlign: 'middle', marginRight: 10 }} /> Add to cart</ButtonAddCart>
                         </ButtonsDiv>
                     </SectionGame>
                     <SectionCart>
                         <CartTittle>CART</CartTittle>
+                        {itemInCart.map(item => (
+                            <ItemCart key={item.numbers}
+                                item={item}
+                                color={item.color}
+                                numbers={item.numbers}
+                                type={item.type}
+                                price={item.price}
+                            />
+                        ))}
+
+
                         <TotalDiv>
                             <strong>CART</strong>
-                            <FinalText>Total: R$ 0,00</FinalText>
+                            <FinalText>Total: R$ {formatValue(Number(cartPrice))}</FinalText>
                         </TotalDiv>
                         <FinalButton type='button'>Save <FiArrowRight style={{ verticalAlign: 'middle' }} /></FinalButton>
                     </SectionCart>
