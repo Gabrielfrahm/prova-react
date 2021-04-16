@@ -6,6 +6,7 @@ import store from './store/index';
 
 
 import Global from './styles/global'
+import AppProvider from './hooks';
 
 
 const App: React.FC = () => {
@@ -14,12 +15,12 @@ const App: React.FC = () => {
 
   return (
     <Provider store={store}>
-
+      <AppProvider>
         <BrowserRouter>
           <Routes />
           <Global />
         </BrowserRouter>
-
+      </AppProvider>
     </Provider>
   )
 }

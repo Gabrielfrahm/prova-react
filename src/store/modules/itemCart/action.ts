@@ -36,3 +36,31 @@ export function removeProductToCart(item: Item){
         }
     };
 }
+
+
+export function addGamesRequest(item: Item[]){
+    return {
+        type: ActionTypes.addGamesRequest,
+        payload: {
+            item,
+        }
+    };
+}
+
+export function addGamesSuccess(item: Item[]){
+    return {
+        type: ActionTypes.addGamesSuccess,
+        payload: {
+            item,
+        }
+    };
+}
+
+export function addGamesFailure(error: string){
+    return {
+        type: ActionTypes.addGamesFailure,
+        payload: {
+            error,
+        }
+    };
+}

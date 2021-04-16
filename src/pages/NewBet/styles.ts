@@ -1,4 +1,4 @@
-import { shade } from 'polished';
+import { lighten, shade } from 'polished';
 import styled from 'styled-components';
 
 
@@ -8,8 +8,6 @@ export const Container = styled.div`
     display: flex;
     justify-content: space-around;
     align-items: stretch;
-
-    
 `;
 
 export const Content = styled.div`
@@ -50,7 +48,7 @@ export const SectionGame = styled.section`
 `;
 
 export const Title = styled.h1`
-    margin-top: 50px;
+    margin-top: 30px;
     font-size: 25px;
     font-style: italic;
     font-weight: lighter;
@@ -180,12 +178,14 @@ export const SectionCart = styled.section`
     margin-top: 41px;
     position: relative;
     width: 317px;
+    max-height: 800px;
     background-color: #FFFFFF;
     border: 1px solid #E2E2E2;
     border-radius: 10px;
+    margin-bottom: 20px;
 
     @media (max-width: 1024px){
-        margin-bottom: 20px;
+        margin-bottom: 80px;
     }
 `;
 
@@ -194,6 +194,11 @@ export const CartTittle = styled.h1`
     font-size:28px;
     font-weight: bold;
     margin: 32px 19px;
+`;
+
+export const WrapperCartItem = styled.div`
+    overflow: auto;
+    max-height: 400px;
 `;
 
 export const TotalDiv = styled.div`
@@ -217,6 +222,14 @@ export const FinalButton = styled.button`
     color: #27C383;
     font-size: 32px;
     font-weight: bold;
+
+    &:hover{
+        background-color: ${shade(0.1, `#F7F7F7`)};
+        color: ${lighten(0.1, `#27C383`)};
+    }
 `;
 
 
+export const FeedbackCart = styled.p`
+    text-align: center;
+`;

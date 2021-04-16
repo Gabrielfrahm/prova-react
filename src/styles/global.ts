@@ -1,4 +1,4 @@
-import {createGlobalStyle} from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
 
 export default createGlobalStyle`
 *{
@@ -6,6 +6,19 @@ export default createGlobalStyle`
   padding: 0;
   box-sizing: border-box;
   outline: 0;
+  &::-webkit-scrollbar-track {
+    background-color: #707070;
+    border-radius: 15px;
+  }
+  &::-webkit-scrollbar {
+      width: 8px;
+      /* background: #707070; */
+      border-radius: 15px;
+  }
+  &::-webkit-scrollbar-thumb {
+      background: #11AD6C;
+      border-radius: 15px;
+  }
   
 }
 
@@ -13,6 +26,7 @@ body{
   background: #F7F7F7;
   color: #707070;
   -webkit-font-smooth: antialiased;
+  overflow-x: hidden;
 }
 
 body,input,button{

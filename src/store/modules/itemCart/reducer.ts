@@ -7,6 +7,7 @@ const INITIAL_STATE: CartIState = {
     items: [],
     error: '',
     price : 0,
+    bets: []
 }
 
 const cart: Reducer<CartIState> = (state = INITIAL_STATE, action) => {
@@ -41,6 +42,23 @@ const cart: Reducer<CartIState> = (state = INITIAL_STATE, action) => {
                 draft.price = (draft.price - item.price);
                 break;
             }
+            case ActionTypes.addGamesSuccess: {
+                const {item} = action.payload;
+                if(draft.price >= 30){
+                    draft.bets.push(item);
+                    draft.items = [];
+                    draft.price = 0;
+                }else{
+                    draft.error = 'no minimo 30 reais';
+                }
+                break;
+            }
+            case ActionTypes.addGamesFailure: {
+                const {error} = action.payload;
+                draft.error = error;
+                break;
+            }
+
             default: {
                 return draft;
             }

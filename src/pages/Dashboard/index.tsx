@@ -9,8 +9,8 @@ import Menu from '../../components/Menu';
 
 import { IState } from '../../store';
 import { Container, Content, Title, Button } from './styles';
-// import { loadGames } from '../../store/modules/games/action';
 import { GamesProps } from '../../store/modules/games/types';
+import { Item } from '../../store/modules/itemCart/type';
 
 const Dashboard: React.FC = () => {
     const errorState = useSelector<IState>(state => {
@@ -21,11 +21,13 @@ const Dashboard: React.FC = () => {
         return state.games.games;
     });
 
-    // const dispatch = useDispatch();
+    const bets = useSelector<IState, Item[]>( state => {
+        return state.itemCart.bets;
+    })
+
     //state of active button 
     const [active, setActive] = useState(false);
-    //state of games of json
-    // const [bet, setBet] = useState<GamesProps[]>([]);
+
     //state of game selected to user
     const [gameSelected, setGameSelected] = useState('');
 
@@ -35,10 +37,6 @@ const Dashboard: React.FC = () => {
         setGameSelected(gameName);
         setActive(true);
     }, []);
-
-    // useEffect(() => {
-    //     dispatch(loadGames());
-    // },[dispatch]);
 
     const handleToClickInNewBet = useCallback(() => {
         history.push('/new-bet')
@@ -66,6 +64,7 @@ const Dashboard: React.FC = () => {
                         : <p>Erro ao carregar os jogos</p>
                     }
                     <Button onClick={handleToClickInNewBet}>New Bet <FiArrowRight style={{ verticalAlign: 'middle' }} /></Button>
+
                 </Content>
             </Container>
             <Footer />
