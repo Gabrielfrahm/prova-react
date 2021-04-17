@@ -176,7 +176,8 @@ const NewBet: React.FC = () => {
                 color: String(colorGame),
                 numbers: numbersUser.sort(compareNumbers).join(','),
                 type: String(infoGame.map(game => game.type)),
-                price: Number(infoGame.map(game => game.price))
+                price: Number(infoGame.map(game => game.price)),
+                date: new Date(),
             }))
             setNumbersUser([]);
             addToast({

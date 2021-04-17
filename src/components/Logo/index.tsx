@@ -1,11 +1,16 @@
 import React from 'react';
-import {Span, Hr} from './styles';
- 
+import { Link, useHistory } from 'react-router-dom';
+import {Span, Hr, Container} from './styles';
+
 
 
 const Logo : React.FC = () => {
+    const history = useHistory();
     return (
-        <Span  >TGL <Hr /></Span> 
+        <Container>
+            <Span  >TGL <Hr /></Span> 
+           {history.location.pathname !== '/dashboard' ? <Link to ="/dashboard">Home</Link> : <Link to ="#"></Link> }
+        </Container>
     );
 }
 

@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import * as Yup from 'yup';
-import { Link, useHistory} from 'react-router-dom';
-import { FiAlertCircle, FiArrowRight } from 'react-icons/fi'
+import { Link, useHistory } from 'react-router-dom';
+import {  FiArrowRight } from 'react-icons/fi';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import Footer from '../../components/Footer';
@@ -25,12 +25,9 @@ const SignIn: React.FC = () => {
 
     const dispatch = useDispatch();
 
-    const state= useSelector<IState>(state => {
-        if(state.auth.erro !== ''){
-            return state.auth.erro;
-        }
-    } )
-    
+    const state = useSelector<IState>(state => {
+        return state.auth.erro_singIn;
+    });
 
     const formRef = useRef<FormHandles>(null);
 
@@ -52,9 +49,9 @@ const SignIn: React.FC = () => {
                     email: data.email,
                     password: data.password
                 }));
-                
-                history.push('/dashboard')
 
+                history.push('/dashboard');
+ 
             } catch (err) {
                 if (err instanceof Yup.ValidationError) {
                     const errors = getValidationErrors(err);
@@ -62,9 +59,9 @@ const SignIn: React.FC = () => {
                     return;
                 }
             }
-        }, [dispatch, history]);
+        }, [dispatch, history, ]);
 
-        
+
     return (
         <>
             <Container>
@@ -76,18 +73,15 @@ const SignIn: React.FC = () => {
                 <Content>
                     <Form ref={formRef} onSubmit={handleSubmit}>
                         <h1>Authentication</h1>
-                        {state && 
-                            <p style={{color: 'red', display: 'flex', alignItems: 'center', flexDirection: 'column', fontSize: '12px'}}>
-                                <FiAlertCircle size={40} /> {state}
-                            </p>}
+                        {state ? <p style={{color: 'red'}}> {state}</p>: null}
                         <div>
                             <Input name="email" placeholder="Email" />
                             <Input name="password" type="password" placeholder="Password" />
                             <Link to="/reset-password">I forget my password </Link>
-                            <Button  type="submit">Log In  <FiArrowRight  style={{verticalAlign: 'middle'}} /></Button>
+                            <Button type="submit">Log In  <FiArrowRight style={{ verticalAlign: 'middle' }} /></Button>
                         </div>
                     </Form>
-                    <Link to='/signup'>Sign Up  <FiArrowRight  style={{verticalAlign: 'middle'}} /></Link>
+                    <Link to='/signup'>Sign Up  <FiArrowRight style={{ verticalAlign: 'middle' }} /></Link>
                 </Content>
             </Container>
             <Footer />

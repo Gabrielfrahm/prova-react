@@ -13,6 +13,7 @@ export interface Item {
     type: string;
     price: number;
     numbers: string;
+    date: Date;
 }
 
 export interface CartIState {

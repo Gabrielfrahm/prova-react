@@ -8,7 +8,7 @@ export const Ul = styled.ul`
     justify-content: center;
     height: 100%;
 
-    a {
+     > a {
         margin-left: 57px;
         text-decoration: none;
         color: #707070;
@@ -19,8 +19,14 @@ export const Ul = styled.ul`
         &:hover{
             color: ${lighten(0.2, '#707070')}
         }
+
+        @media (max-width: 500px){
+            margin-left: 0;
+        }
     
     }
+
+    
 `;
 
 

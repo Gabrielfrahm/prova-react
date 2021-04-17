@@ -7,8 +7,7 @@ export const Container = styled.div`
     display: flex;
     overflow-x: hidden;
     align-items: stretch; 
-    justify-content: center;
-
+    flex-direction: column;
 `;
 
 export const Title = styled.h1`
@@ -35,7 +34,7 @@ export const Content = styled.div`
     max-width: 1300px;
     
     @media (max-width: 1150px){
-        padding: 80px;
+        /* padding: 0px; */
     }
 
     @media (max-width: 600px){
@@ -80,4 +79,21 @@ export const Button = styled.button`
     } 
 `;
 
+export const ShowBet = styled.div`
+    display: flex;
+    flex-direction: column;
+    padding: 0  0 15px 150px ;
+    height: 80px;
+    max-width: 1300px;
 
+    @media (max-width: 800px){
+        padding: 80px;
+    } 
+
+    @media (max-width: 600px){
+        align-items: center;
+
+        margin-top: 70px;
+        padding: 80px;
+    } 
+`;

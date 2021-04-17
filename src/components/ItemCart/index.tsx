@@ -13,13 +13,6 @@ import {
     ThirdDiv
 } from './styles';
 
-// type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-//     color: string;
-//     type: string;
-//     price: number;
-//     numbers: string;
-//     item: Item;
-// }
 
 interface ItemProps {
     color: string;
@@ -29,7 +22,7 @@ interface ItemProps {
     item: Item;
 }
 
-const ItemCart: React.FC<ItemProps> = ({ color, type, price, numbers, item }) => {
+const ItemCart: React.FC<ItemProps> = ({ color, type, price, numbers, item,  }) => {
     const dispatch = useDispatch();
 
     return (

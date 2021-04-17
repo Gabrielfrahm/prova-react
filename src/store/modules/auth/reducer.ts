@@ -8,7 +8,8 @@ const INICIAL_STATE: UserState = {
         email: '',
         password: '',
     },
-    erro: '',
+    erro_singUp: 'a',
+    erro_singIn: '',
 }
 
 const auth: Reducer<UserState> = (state = INICIAL_STATE, action) => {
@@ -19,13 +20,14 @@ const auth: Reducer<UserState> = (state = INICIAL_STATE, action) => {
                 const { user } = action.payload;
                 
                 draft.users.push(user);
-                draft.erro = '';
+                draft.erro_singUp = '';
+                draft.erro_singIn = '';
 
                 break;
             }
             case ActionTypes.signUpFailure: {
                 const { error } = action.payload;
-                draft.erro = error;
+                draft.erro_singUp = error;
                 break;
             }
             case ActionTypes.signInSuccess: {
@@ -37,14 +39,15 @@ const auth: Reducer<UserState> = (state = INICIAL_STATE, action) => {
                 if (checkUSer) {
                     draft.auth.email = user.email;
                     draft.auth.password = user.password;
-                    draft.erro = '';
                     localStorage.setItem('@user', JSON.stringify(user))
                 }
+                draft.erro_singIn = '';
+                draft.erro_singUp = '';
                 break;
             }
             case ActionTypes.signInFailure: {
                 const { error } = action.payload;
-                draft.erro = error;
+                draft.erro_singIn = error;
                 break;
             }
             default:

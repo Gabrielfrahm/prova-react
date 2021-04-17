@@ -35,7 +35,7 @@ const cart: Reducer<CartIState> = (state = INITIAL_STATE, action) => {
             case ActionTypes.removeProductToCart: {
                 const {item} = action.payload;
                 const findItem = draft.items.findIndex(i => {
-                    return i.numbers === item.numbers && i.type === item.type
+                    return i.numbers === item.numbers && i.type === item.type 
                 });
                 console.log(findItem);
                 draft.items.splice(findItem, 1 );
@@ -45,7 +45,7 @@ const cart: Reducer<CartIState> = (state = INITIAL_STATE, action) => {
             case ActionTypes.addGamesSuccess: {
                 const {item} = action.payload;
                 if(draft.price >= 30){
-                    draft.bets.push(item);
+                    draft.bets = draft.bets.concat(item);
                     draft.items = [];
                     draft.price = 0;
                 }else{

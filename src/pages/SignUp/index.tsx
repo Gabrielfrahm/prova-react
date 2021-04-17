@@ -4,7 +4,7 @@ import getValidationErrors from '../../utils/getValidationErrors';
 import { useDispatch, useSelector } from 'react-redux';
 import { signUpRequest } from '../../store/modules/auth/action';
 import { Link, useHistory } from 'react-router-dom';
-import { FiArrowRight, FiArrowLeft, FiAlertCircle } from 'react-icons/fi'
+import { FiArrowRight, FiArrowLeft } from 'react-icons/fi'
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import Footer from '../../components/Footer';
@@ -22,10 +22,9 @@ const SignUp: React.FC = () => {
    
     const dispatch = useDispatch();
 
+
     const state = useSelector<IState>(state => {
-        if(state.auth.erro !== ''){
-            return state.auth.erro;
-        }
+        return state.auth.erro_singUp;
     });
     const history = useHistory();
     const formRef = useRef<FormHandles>(null);
@@ -41,20 +40,24 @@ const SignUp: React.FC = () => {
                 await schema.validate(data, {
                     abortEarly: false,
                 });
+
                 dispatch(signUpRequest({
                     name: data.name,
                     email: data.email,
                     password: data.password,
                 }));
+
                 if(state === ''){
                     history.push('/')
                 }
+                
             } catch (err) {
                 if (err instanceof Yup.ValidationError) {
                     const errors = getValidationErrors(err);
                     formRef.current?.setErrors(errors);
                     return; 
                 }
+
             }
         }, [dispatch, history, state])
 
@@ -69,10 +72,7 @@ const SignUp: React.FC = () => {
                 <Content>
                     <Form ref={formRef} onSubmit={handleSubmit}>
                         <h1>Registration</h1>
-                        {state && 
-                            <p style={{color: 'red', display: 'flex', alignItems: 'center', flexDirection: 'column', fontSize: '12px'}}>
-                                <FiAlertCircle size={40} /> {state}
-                            </p>}
+                        {state !== 'a' ? <p style={{color: 'red'}}> {state}</p>: null}
                         <div>
                             <Input name="name" placeholder="Name" />
                             <Input name="email" placeholder="Email" />

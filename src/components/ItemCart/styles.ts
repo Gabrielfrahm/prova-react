@@ -39,6 +39,7 @@ export const ThirdDiv = styled.div`
     display: flex;
     >p {
         margin: 5px;
+        font-size:16px
     }
 `;
 
@@ -46,4 +47,6 @@ export const TypeGame = styled.p<GamesProps>`
     color: ${props => props.color};
     font-weight: bold;
     margin: 5px;
+    font-style: italic;
+    font-size: 16px;
 `;

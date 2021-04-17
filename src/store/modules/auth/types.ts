@@ -22,5 +22,6 @@ export interface Auth {
 export interface UserState {
     users: User[];
     auth: Auth;
-    erro: string;
+    erro_singUp: string;
+    erro_singIn: string;
 }
