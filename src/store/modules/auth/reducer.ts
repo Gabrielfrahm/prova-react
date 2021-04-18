@@ -8,7 +8,7 @@ const INICIAL_STATE: UserState = {
         email: '',
         password: '',
     },
-    erro_singUp: 'a',
+    erro_singUp: '',
     erro_singIn: '',
 }
 

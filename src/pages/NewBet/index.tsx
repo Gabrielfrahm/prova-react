@@ -194,7 +194,7 @@ const NewBet: React.FC = () => {
     }, [dispatch, colorGame, infoGame, numbersUser, addToast]);
 
     const handleSaveGame = useCallback(() => {
-        if(Number(cartPrice)  >=30){
+        if(Number(cartPrice) >=30){
             dispatch(addGamesRequest(itemInCart));
             history.goBack()
             addToast({
@@ -214,6 +214,7 @@ const NewBet: React.FC = () => {
     useEffect(() => {//initial bet
         setInfoGame([initialGame]);
         setGameSelected(initialGame?.type)
+        setActive(true);
     }, [initialGame]);
 
     useEffect(() => {//after user selected game set information on array 
@@ -237,7 +238,7 @@ const NewBet: React.FC = () => {
                                 ? betsState.map(game => (
                                     <ButtonGames
                                         onClick={() => handleClickedInButtonGame(game.type)}
-                                        isActive={game.type === gameSelected ? active : false}
+                                        isActive={game.type === gameSelected  ? active : false}
                                         type='button'
                                         key={game.type}
                                         color={game.color}

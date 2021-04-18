@@ -60,7 +60,8 @@ const Dashboard: React.FC = () => {
     }, [history])
 
     useEffect(() => {//initial bet
-        setGameSelected(initialGame?.type)
+        setGameSelected(initialGame?.type);
+        setActive(true);
     }, [initialGame]);
 
     useEffect(() => {//initial bet
