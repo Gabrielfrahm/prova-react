@@ -40,6 +40,7 @@ const Dashboard: React.FC = () => {
 
     const [filterGame , setFilterGame] = useState<Item[]>([])
 
+
     const history = useHistory();
 
     const handleFilterGame = useCallback(() => {
@@ -58,6 +59,7 @@ const Dashboard: React.FC = () => {
     const handleToClickInNewBet = useCallback(() => {
         history.push('/new-bet')
     }, [history])
+
 
     useEffect(() => {//initial bet
         setGameSelected(initialGame?.type);

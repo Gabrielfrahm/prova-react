@@ -140,6 +140,7 @@ const NewBet: React.FC = () => {
     const handleUserChoseNumber = useCallback((e) => {//user selected number 
         const limit = infoGame.map(game => game['max-number']);
         const check = numbersUser.find(numb => numb === Number(e.target.value));
+        // const findIndex = numbersUser.findIndex(numb => numb === e.target.value);
         if (numbersUser.length === Number(limit)) {
             addToast({
                 type: 'error',
@@ -153,6 +154,8 @@ const NewBet: React.FC = () => {
                     title: 'voce ja tem esse numero',
                     description: e.target.value,
                 })
+                
+                // numbersUser.splice(findIndex, 1);
             }else{
                 setNumbersUser([...numbersUser, Number(e.target.value)]);
             }
@@ -174,7 +177,10 @@ const NewBet: React.FC = () => {
         if(Number(infoGame.map(game => game['max-number'])) === numbersUser.length ){
             dispatch(addProductToCartRequest({
                 color: String(colorGame),
-                numbers: numbersUser.sort(compareNumbers).join(','),
+                // numbers: numbersUser.sort(compareNumbers).join(','),
+                numbers: String(numbersUser.sort(compareNumbers).map(numb => {
+                    return numb < 10 ? '0' + numb : numb;
+                })),
                 type: String(infoGame.map(game => game.type)),
                 price: Number(infoGame.map(game => game.price)),
                 date: new Date(),
@@ -260,7 +266,7 @@ const NewBet: React.FC = () => {
                                     value={num}
                                     color={numbersUser.some(item => item === num) ? String(colorGame) : ''}
                                     key={num.valueOf()}
-                                    valueNumber={num} />
+                                    valueNumber={num > 9 ? String(num) : '0' + num} />
                             ))}
                         </DivNumbers>
                         <ButtonsDiv>

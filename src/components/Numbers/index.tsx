@@ -3,7 +3,7 @@ import React, { ButtonHTMLAttributes } from 'react';
 import { Container } from './styles';
 
 type NumberProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-    valueNumber: Number;
+    valueNumber: string;
     color?: string;
 }
 

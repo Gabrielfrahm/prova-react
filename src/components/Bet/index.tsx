@@ -13,7 +13,6 @@ const Bet: React.FC<BetProps> = ({ numbers, date, betType, color, price }) => {
     return (
         <Container>
             <Content color={color} >
-           
                 <Numbers>{numbers}</Numbers>
                 <TextData>{date} - ({price})</TextData>
                 <BetType color={color}>{betType}</BetType>
