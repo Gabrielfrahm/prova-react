@@ -1,8 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import * as Yup from 'yup';
 import getValidationErrors from '../../utils/getValidationErrors';
-import { useDispatch, useSelector } from 'react-redux';
-import { signUpRequest } from '../../store/modules/auth/action';
+
 import { Link, useHistory } from 'react-router-dom';
 import { FiArrowRight, FiArrowLeft } from 'react-icons/fi'
 import { FormHandles } from '@unform/core';
@@ -10,8 +9,10 @@ import { Form } from '@unform/web';
 import Footer from '../../components/Footer';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
-import { IState } from '../../store';
+// import { IState } from '../../store';
 import { Container, Content, Presentation } from './styles';
+import api from '../../server/api';
+import { useToast } from '../../hooks/Toast';
 interface SignUpFormData {
     name: string;
     email: string;
@@ -19,13 +20,11 @@ interface SignUpFormData {
 }
 
 const SignUp: React.FC = () => {
-   
-    const dispatch = useDispatch();
 
-
-    const state = useSelector<IState>(state => {
-        return state.auth.erro_singUp;
-    });
+    // const state = useSelector<IState>(state => {
+    //     return state.auth.erro_singUp;
+    // });
+    const { addToast } = useToast();
     const history = useHistory();
     const formRef = useRef<FormHandles>(null);
     const handleSubmit = useCallback(
@@ -41,25 +40,28 @@ const SignUp: React.FC = () => {
                     abortEarly: false,
                 });
 
-                dispatch(signUpRequest({
-                    name: data.name,
-                    email: data.email,
-                    password: data.password,
-                }));
-
-                if(state === ''){
-                    history.push('/')
-                }
-                
+                await api.post('/users', data)
+                history.push('/');
+                addToast({
+                    type: 'success',
+                    title: 'Cadastro realizado',
+                    description: 'Você ja pode fazer seu logon no Go Barber!',
+                });
             } catch (err) {
                 if (err instanceof Yup.ValidationError) {
                     const errors = getValidationErrors(err);
                     formRef.current?.setErrors(errors);
-                    return; 
+                    return;
                 }
+                addToast({
+                    type: 'error',
+                    title: 'Erro no Cadastro',
+                    description:
+                        'Ocorreu um erro ao tentar fazer o cadastro, tente novamente!',
+                });
 
             }
-        }, [dispatch, history, state])
+        }, [history, addToast])
 
     return (
         <>
@@ -72,7 +74,6 @@ const SignUp: React.FC = () => {
                 <Content>
                     <Form ref={formRef} onSubmit={handleSubmit}>
                         <h1>Registration</h1>
-                        {state !== 'a' ? <p style={{color: 'red'}}> {state}</p>: null}
                         <div>
                             <Input name="name" placeholder="Name" />
                             <Input name="email" placeholder="Email" />

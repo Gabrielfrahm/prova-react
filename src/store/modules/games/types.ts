@@ -10,8 +10,8 @@ export interface GamesProps {
     description: string;
     range: number;
     price: number;
-    'min-cart-value': number;
-    'max-number': number;
+    minCartValue: number;
+    maxNumber: number;
 }
 
 export interface GamesItem {

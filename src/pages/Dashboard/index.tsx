@@ -3,8 +3,8 @@ import { useHistory } from 'react-router-dom';
 import { FiArrowRight } from 'react-icons/fi';
 import ButtonGames from '../../components/ButtonGames';
 import Footer from '../../components/Footer';
-import {v4 as uuid} from 'uuid'
-import { useSelector } from 'react-redux';
+import { v4 as uuid } from 'uuid'
+import { useDispatch, useSelector } from 'react-redux';
 import Menu from '../../components/Menu';
 
 import { IState } from '../../store';
@@ -14,17 +14,22 @@ import { Item } from '../../store/modules/itemCart/type';
 import Bet from '../../components/Bet';
 import { formatValue } from '../../utils/formatValue';
 import { formatDate } from '../../utils/formatDate';
+import { loadGames } from '../../store/modules/games/action';
+
 
 const Dashboard: React.FC = () => {
+    const dispatch = useDispatch();
+
     const errorState = useSelector<IState>(state => {
         return state.games.error;
     });
+
 
     const betsState = useSelector<IState, GamesProps[]>(state => {
         return state.games.games;
     });
 
-    const bets = useSelector<IState, Item[]>( state => {
+    const bets = useSelector<IState, Item[]>(state => {
         return state.itemCart.bets;
     })
 
@@ -38,28 +43,21 @@ const Dashboard: React.FC = () => {
     //state of game selected to user
     const [gameSelected, setGameSelected] = useState('');
 
-    const [filterGame , setFilterGame] = useState<Item[]>([])
+    const [filterGame, setFilterGame] = useState<Item[]>([])
 
 
     const history = useHistory();
+    
+    useEffect(() => {
+        dispatch(loadGames());
+    }, [dispatch]);
 
     const handleFilterGame = useCallback(() => {
         const game = bets.filter(item => {
             return item.type === gameSelected;
         });
         setFilterGame(game);
-    },[bets, gameSelected])
-
-    const handleClickedInButtonGame = useCallback((gameName: string) => {
-        setGameSelected(gameName);
-        
-        setActive(true);
-    }, []);
-
-    const handleToClickInNewBet = useCallback(() => {
-        history.push('/new-bet')
-    }, [history])
-
+    }, [bets, gameSelected])
 
     useEffect(() => {//initial bet
         setGameSelected(initialGame?.type);
@@ -69,6 +67,17 @@ const Dashboard: React.FC = () => {
     useEffect(() => {//initial bet
         handleFilterGame();
     }, [handleFilterGame]);
+
+    const handleClickedInButtonGame = useCallback((gameName: string) => {
+        setGameSelected(gameName);
+
+        setActive(true);
+    }, []);
+
+    const handleToClickInNewBet = useCallback(() => {
+        history.push('/new-bet')
+    }, [history])
+
 
     return (
         <>
@@ -93,21 +102,21 @@ const Dashboard: React.FC = () => {
                     }
                     <Button onClick={handleToClickInNewBet}>New Bet <FiArrowRight style={{ verticalAlign: 'middle' }} /></Button>
                 </Content>
-                    <ShowBet>
-                        {filterGame.length !== 0
-                            ? filterGame.map(item => (
-                                <Bet
-                                    key={uuid()}
-                                    price={formatValue(item.price)} 
-                                    color={item.color}
-                                    numbers={item.numbers}
-                                    date={formatDate(item.date)}
-                                    betType={item.type}
-                                />
-                            ))
-                            : <p>Empty 😢 {gameSelected}</p>
-                        }
-                    </ShowBet>
+                <ShowBet>
+                    {filterGame.length !== 0
+                        ? filterGame.map(item => (
+                            <Bet
+                                key={uuid()}
+                                price={formatValue(item.price)}
+                                color={item.color}
+                                numbers={item.numbers}
+                                date={formatDate(item.date)}
+                                betType={item.type}
+                            />
+                        ))
+                        : <p>Empty 😢 {gameSelected}</p>
+                    }
+                </ShowBet>
             </Container>
             <Footer />
         </>
@@ -115,3 +124,4 @@ const Dashboard: React.FC = () => {
 }
 
 export default Dashboard;
+

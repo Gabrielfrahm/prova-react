@@ -10,7 +10,7 @@ import { IState } from '../../store';
 import { FiArrowRight, FiShoppingCart } from 'react-icons/fi';
 
 import ItemCart from '../../components/ItemCart';
-import { addProductToCartRequest,addGamesRequest } from '../../store/modules/itemCart/action';
+import { addProductToCartRequest, addGamesRequest } from '../../store/modules/itemCart/action';
 import { Item } from '../../store/modules/itemCart/type';
 import { formatValue } from '../../utils/formatValue';
 import { compareNumbers } from '../../utils/formSortArray';
@@ -59,9 +59,9 @@ const NewBet: React.FC = () => {
         return state.itemCart.price;
     })
 
-    const dispatch = useDispatch(); 
+    const dispatch = useDispatch();
 
-    const {addToast} = useToast();
+    const { addToast } = useToast();
 
     const history = useHistory();
 
@@ -94,7 +94,7 @@ const NewBet: React.FC = () => {
     const handleGenerateBet = useCallback(() => {//generate numbers of bets
         let bet: number[] = [];
         const range = infoGame.map(game => { return game.range });
-        const limit = infoGame.map(game => { return game['max-number'] });
+        const limit = infoGame.map(game => { return game.maxNumber });
         let arrLength = Number(limit) - numbersUser.length;
         if (numbersUser.length > 0) {
             for (let i = 1; i <= arrLength; i++) {
@@ -133,12 +133,14 @@ const NewBet: React.FC = () => {
                 bet.push(number);
             }
         }
+
         setNumbersUser(bet);
         return bet;
     }, [numbersUser, infoGame]);
 
+
     const handleUserChoseNumber = useCallback((e) => {//user selected number 
-        const limit = infoGame.map(game => game['max-number']);
+        const limit = infoGame.map(game => game.maxNumber);
         const check = numbersUser.find(numb => numb === Number(e.target.value));
         // const findIndex = numbersUser.findIndex(numb => numb === e.target.value);
         if (numbersUser.length === Number(limit)) {
@@ -154,18 +156,18 @@ const NewBet: React.FC = () => {
                     title: 'voce ja tem esse numero',
                     description: e.target.value,
                 })
-                
+
                 // numbersUser.splice(findIndex, 1);
-            }else{
+            } else {
                 setNumbersUser([...numbersUser, Number(e.target.value)]);
             }
         }
     }, [numbersUser, infoGame, addToast]);
 
     const handleClearGame = useCallback(() => {//clear the game 
-        if(numbersUser.length !== 0){
+        if (numbersUser.length !== 0) {
             setNumbersUser([]);
-        }else{
+        } else {
             addToast({
                 type: 'info',
                 title: 'Antes de limpar selecione escolha um numero'
@@ -174,7 +176,7 @@ const NewBet: React.FC = () => {
     }, [addToast, numbersUser]);
 
     const handleAddGameCart = useCallback(() => {//add item  in state cart
-        if(Number(infoGame.map(game => game['max-number'])) === numbersUser.length ){
+        if (Number(infoGame.map(game => game.maxNumber)) === numbersUser.length) {
             dispatch(addProductToCartRequest({
                 color: String(colorGame),
                 // numbers: numbersUser.sort(compareNumbers).join(','),
@@ -191,7 +193,7 @@ const NewBet: React.FC = () => {
                 title: 'Adicionado no carrinho',
                 description: 'Você adicionou um jogo ao carrinho',
             })
-        }else{
+        } else {
             addToast({
                 type: 'info',
                 title: 'antes de adicionar no carrinho selecione todos os números',
@@ -200,7 +202,7 @@ const NewBet: React.FC = () => {
     }, [dispatch, colorGame, infoGame, numbersUser, addToast]);
 
     const handleSaveGame = useCallback(() => {
-        if(Number(cartPrice) >=30){
+        if (Number(cartPrice) >= 30) {
             dispatch(addGamesRequest(itemInCart));
             history.goBack()
             addToast({
@@ -208,14 +210,14 @@ const NewBet: React.FC = () => {
                 title: 'jogos salvos',
             })
         }
-        if(Number(cartPrice)  < 30){
+        if (Number(cartPrice) < 30) {
             addToast({
                 type: 'error',
                 title: 'faça jogos, ate chegar no valor de R$ 30,00',
             })
         }
 
-    },[dispatch, itemInCart, cartPrice, addToast, history])
+    }, [dispatch, itemInCart, cartPrice, addToast, history])
 
     useEffect(() => {//initial bet
         setInfoGame([initialGame]);
@@ -244,7 +246,7 @@ const NewBet: React.FC = () => {
                                 ? betsState.map(game => (
                                     <ButtonGames
                                         onClick={() => handleClickedInButtonGame(game.type)}
-                                        isActive={game.type === gameSelected  ? active : false}
+                                        isActive={game.type === gameSelected ? active : false}
                                         type='button'
                                         key={game.type}
                                         color={game.color}
@@ -278,19 +280,19 @@ const NewBet: React.FC = () => {
                     <SectionCart>
                         <CartTittle>CART</CartTittle>
                         <WrapperCartItem>
-                        {cartPrice !== 0 
-                            ?
-                            itemInCart.map(item => (
-                                <ItemCart key={item.numbers}
-                                    item={item}
-                                    color={item.color}
-                                    numbers={item.numbers}
-                                    type={item.type}
-                                    price={item.price}
-                                />
-                            ))
-                            : <FeedbackCart>Empty 😢 </FeedbackCart>
-                        }
+                            {cartPrice !== 0
+                                ?
+                                itemInCart.map(item => (
+                                    <ItemCart key={item.numbers}
+                                        item={item}
+                                        color={item.color}
+                                        numbers={item.numbers}
+                                        type={item.type}
+                                        price={item.price}
+                                    />
+                                ))
+                                : <FeedbackCart>Empty 😢 </FeedbackCart>
+                            }
                         </WrapperCartItem>
                         <TotalDiv>
                             <strong>CART</strong>
