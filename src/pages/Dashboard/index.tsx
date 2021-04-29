@@ -15,6 +15,7 @@ import Bet from '../../components/Bet';
 import { formatValue } from '../../utils/formatValue';
 import { formatDate } from '../../utils/formatDate';
 import { loadGames } from '../../store/modules/games/action';
+import api from '../../server/api';
 
 
 const Dashboard: React.FC = () => {
@@ -24,7 +25,6 @@ const Dashboard: React.FC = () => {
         return state.games.error;
     });
 
-
     const betsState = useSelector<IState, GamesProps[]>(state => {
         return state.games.games;
     });
@@ -33,9 +33,7 @@ const Dashboard: React.FC = () => {
         return state.itemCart.bets;
     })
 
-    const initialGame = useSelector<IState, GamesProps>(state => {//first bet of array bets
-        return state.games.games[0];
-    });
+    const [games, setGames] = useState<Item[]>([]);
 
     //state of active button 
     const [active, setActive] = useState(false);
@@ -43,30 +41,33 @@ const Dashboard: React.FC = () => {
     //state of game selected to user
     const [gameSelected, setGameSelected] = useState('');
 
-    const [filterGame, setFilterGame] = useState<Item[]>([])
-
+    const [filterGame, setFilterGame] = useState<Item[]>([]);
 
     const history = useHistory();
-    
+
     useEffect(() => {
         dispatch(loadGames());
     }, [dispatch]);
 
     const handleFilterGame = useCallback(() => {
-        const game = bets.filter(item => {
+        const game = games.filter(item => {
             return item.type === gameSelected;
         });
         setFilterGame(game);
-    }, [bets, gameSelected])
-
-    useEffect(() => {//initial bet
-        setGameSelected(initialGame?.type);
-        setActive(true);
-    }, [initialGame]);
+    }, [games, gameSelected])
 
     useEffect(() => {//initial bet
         handleFilterGame();
     }, [handleFilterGame]);
+
+    useEffect(() => {
+        api.get('/game/bets').then(
+            response => {
+                setGames(response.data)
+            }
+        );
+
+    }, []);
 
     const handleClickedInButtonGame = useCallback((gameName: string) => {
         setGameSelected(gameName);
@@ -78,6 +79,7 @@ const Dashboard: React.FC = () => {
         history.push('/new-bet')
     }, [history])
 
+    console.log(new Date())
 
     return (
         <>
@@ -103,6 +105,19 @@ const Dashboard: React.FC = () => {
                     <Button onClick={handleToClickInNewBet}>New Bet <FiArrowRight style={{ verticalAlign: 'middle' }} /></Button>
                 </Content>
                 <ShowBet>
+                    {/* {games.map(item => (
+
+                        <Bet
+                            key={uuid()}
+                            price={formatValue(item.price)}
+                            color={item.color}
+                            numbers={item.numbers}
+                            date={item.created_at.toLocaleString()}
+                            betType={item.type}
+                        />
+
+
+                    ))} */}
                     {filterGame.length !== 0
                         ? filterGame.map(item => (
                             <Bet
@@ -110,11 +125,23 @@ const Dashboard: React.FC = () => {
                                 price={formatValue(item.price)}
                                 color={item.color}
                                 numbers={item.numbers}
-                                date={formatDate(item.date)}
+                                date={formatDate(item.created_at)}
                                 betType={item.type}
                             />
                         ))
                         : <p>Empty 😢 {gameSelected}</p>
+                        // : bets.map(item => {
+                        //     return (
+                        //         <Bet
+                        //             key={uuid()}
+                        //             price={formatValue(item.price)}
+                        //             color={item.color}
+                        //             numbers={item.numbers}
+                        //             date={formatDate(item.date)}
+                        //             betType={item.type}
+                        //         />
+                        //     )
+                        // })
                     }
                 </ShowBet>
             </Container>

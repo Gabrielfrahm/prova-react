@@ -36,6 +36,15 @@ import {
     FeedbackCart,
 } from './styles';
 import { useHistory } from 'react-router';
+import api from '../../server/api';
+import { useAuth } from '../../hooks/Auth';
+
+export interface ItemCartProps {
+    user_id: string;
+    game_id: number;
+    price: number;
+    numbers: string;
+}
 
 const NewBet: React.FC = () => {
 
@@ -51,7 +60,7 @@ const NewBet: React.FC = () => {
         return state.games.games[0];
     });
 
-    const itemInCart = useSelector<IState, Item[]>(state => {//state item in cart
+    const itensInCart = useSelector<IState, Item[]>(state => {//state item in cart
         return state.itemCart.items;
     })
 
@@ -62,6 +71,7 @@ const NewBet: React.FC = () => {
     const dispatch = useDispatch();
 
     const { addToast } = useToast();
+    const { user } = useAuth();
 
     const history = useHistory();
 
@@ -83,7 +93,21 @@ const NewBet: React.FC = () => {
             numberArr.push(i);
         }
         return setNumbers(numberArr);
-    }, [])
+    }, []);
+
+    useEffect(() => {//initial bet
+        setInfoGame([initialGame]);
+        setGameSelected(initialGame?.type)
+        setActive(true);
+    }, [initialGame]);
+
+    useEffect(() => {//after user selected game set information on array 
+        setInfoGame(betsState.filter(game => { return gameSelected === game.type }));
+    }, [betsState, gameSelected]);
+
+    useEffect(() => {//run function generate numbers of game
+        handleGenerateNumbers(Number(infoGame.map(game => game?.range)));
+    }, [infoGame, handleGenerateNumbers]);
 
     const handleClickedInButtonGame = useCallback((gameName: string) => {//get game selected and active toggle color button
         setGameSelected(gameName);
@@ -178,6 +202,7 @@ const NewBet: React.FC = () => {
     const handleAddGameCart = useCallback(() => {//add item  in state cart
         if (Number(infoGame.map(game => game.maxNumber)) === numbersUser.length) {
             dispatch(addProductToCartRequest({
+                id: Number(infoGame.map(game => game.id)),
                 color: String(colorGame),
                 // numbers: numbersUser.sort(compareNumbers).join(','),
                 numbers: String(numbersUser.sort(compareNumbers).map(numb => {
@@ -185,7 +210,7 @@ const NewBet: React.FC = () => {
                 })),
                 type: String(infoGame.map(game => game.type)),
                 price: Number(infoGame.map(game => game.price)),
-                date: new Date(),
+                created_at: new Date(),
             }))
             setNumbersUser([]);
             addToast({
@@ -202,8 +227,19 @@ const NewBet: React.FC = () => {
     }, [dispatch, colorGame, infoGame, numbersUser, addToast]);
 
     const handleSaveGame = useCallback(() => {
+        
         if (Number(cartPrice) >= 30) {
-            dispatch(addGamesRequest(itemInCart));
+            dispatch(addGamesRequest(itensInCart));
+            const itemInCart: ItemCartProps[] = [];
+            itensInCart.map(item => {
+                return itemInCart.push({
+                    user_id: user.id,
+                    game_id: item.id,
+                    numbers: item.numbers, 
+                    price: item.price
+                })
+            })
+            api.post(`/game/bets`, {itemInCart} )
             history.goBack()
             addToast({
                 type: 'success',
@@ -217,21 +253,8 @@ const NewBet: React.FC = () => {
             })
         }
 
-    }, [dispatch, itemInCart, cartPrice, addToast, history])
+    }, [dispatch, itensInCart, cartPrice, addToast, history, user])
 
-    useEffect(() => {//initial bet
-        setInfoGame([initialGame]);
-        setGameSelected(initialGame?.type)
-        setActive(true);
-    }, [initialGame]);
-
-    useEffect(() => {//after user selected game set information on array 
-        setInfoGame(betsState.filter(game => { return gameSelected === game.type }));
-    }, [betsState, gameSelected]);
-
-    useEffect(() => {//run function generate numbers of game
-        handleGenerateNumbers(Number(infoGame.map(game => game?.range)));
-    }, [infoGame, handleGenerateNumbers]);
 
     return (
         <>
@@ -282,7 +305,7 @@ const NewBet: React.FC = () => {
                         <WrapperCartItem>
                             {cartPrice !== 0
                                 ?
-                                itemInCart.map(item => (
+                                itensInCart.map(item => (
                                     <ItemCart key={item.numbers}
                                         item={item}
                                         color={item.color}

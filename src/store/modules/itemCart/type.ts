@@ -9,11 +9,12 @@ export enum ActionTypes {
 }
 
 export interface Item {
+    id: number;
     color: string;
     type: string;
     price: number;
     numbers: string;
-    date: Date;
+    created_at: Date;
 }
 
 export interface CartIState {

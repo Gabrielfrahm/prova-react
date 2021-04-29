@@ -43,7 +43,7 @@ const AuthProvider: React.FC = ({ children }) => {
     const user = localStorage.getItem('@TGL:user');
 
     if (token && user) {
-      api.defaults.headers.authorization = `Bearer ${token}`;
+      api.defaults.headers.Authorization = `Bearer ${token}`;
 
       return {
         token,

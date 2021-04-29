@@ -5,6 +5,7 @@ export enum ActionTypes {
 }
 
 export interface GamesProps {
+    id: number;
     type: string;
     color: string;
     description: string;
