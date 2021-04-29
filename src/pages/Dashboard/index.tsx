@@ -10,13 +10,21 @@ import Menu from '../../components/Menu';
 import { IState } from '../../store';
 import { Container, Content, Title, Button, ShowBet } from './styles';
 import { GamesProps } from '../../store/modules/games/types';
-import { Item } from '../../store/modules/itemCart/type';
 import Bet from '../../components/Bet';
 import { formatValue } from '../../utils/formatValue';
-import { formatDate } from '../../utils/formatDate';
+// import { formatDate } from '../../utils/formatDate';
 import { loadGames } from '../../store/modules/games/action';
 import api from '../../server/api';
 
+export interface ShowBetsProps {
+    id: number;
+    color: string;
+    type: string;
+    price: number;
+    numbers: string;
+    created_at: Date;
+    game: GamesProps;
+};
 
 const Dashboard: React.FC = () => {
     const dispatch = useDispatch();
@@ -29,11 +37,7 @@ const Dashboard: React.FC = () => {
         return state.games.games;
     });
 
-    const bets = useSelector<IState, Item[]>(state => {
-        return state.itemCart.bets;
-    })
-
-    const [games, setGames] = useState<Item[]>([]);
+    const [games, setGames] = useState<ShowBetsProps[]>([]);
 
     //state of active button 
     const [active, setActive] = useState(false);
@@ -41,7 +45,7 @@ const Dashboard: React.FC = () => {
     //state of game selected to user
     const [gameSelected, setGameSelected] = useState('');
 
-    const [filterGame, setFilterGame] = useState<Item[]>([]);
+    const [filterGame, setFilterGame] = useState<ShowBetsProps[]>([]);
 
     const history = useHistory();
 
@@ -51,7 +55,7 @@ const Dashboard: React.FC = () => {
 
     const handleFilterGame = useCallback(() => {
         const game = games.filter(item => {
-            return item.type === gameSelected;
+            return item.game.type === gameSelected;
         });
         setFilterGame(game);
     }, [games, gameSelected])
@@ -63,10 +67,10 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         api.get('/game/bets').then(
             response => {
+                console.log(response.data);
                 setGames(response.data)
             }
         );
-
     }, []);
 
     const handleClickedInButtonGame = useCallback((gameName: string) => {
@@ -78,8 +82,6 @@ const Dashboard: React.FC = () => {
     const handleToClickInNewBet = useCallback(() => {
         history.push('/new-bet')
     }, [history])
-
-    console.log(new Date())
 
     return (
         <>
@@ -105,43 +107,29 @@ const Dashboard: React.FC = () => {
                     <Button onClick={handleToClickInNewBet}>New Bet <FiArrowRight style={{ verticalAlign: 'middle' }} /></Button>
                 </Content>
                 <ShowBet>
-                    {/* {games.map(item => (
 
-                        <Bet
-                            key={uuid()}
-                            price={formatValue(item.price)}
-                            color={item.color}
-                            numbers={item.numbers}
-                            date={item.created_at.toLocaleString()}
-                            betType={item.type}
-                        />
-
-
-                    ))} */}
                     {filterGame.length !== 0
                         ? filterGame.map(item => (
                             <Bet
                                 key={uuid()}
                                 price={formatValue(item.price)}
-                                color={item.color}
+                                color={item.game.color}
                                 numbers={item.numbers}
-                                date={formatDate(item.created_at)}
-                                betType={item.type}
+                                date={String(item.created_at)}
+                                betType={item.game.type}
+                            />
+                            // <p>Empty 😢 {gameSelected}</p>
+                        ))
+                        : games.map(item => (
+                            <Bet
+                                key={uuid()}
+                                price={formatValue(item.price)}
+                                color={item.game.color}
+                                numbers={item.numbers}
+                                date={item.created_at.toLocaleString()}
+                                betType={item.game.type}
                             />
                         ))
-                        : <p>Empty 😢 {gameSelected}</p>
-                        // : bets.map(item => {
-                        //     return (
-                        //         <Bet
-                        //             key={uuid()}
-                        //             price={formatValue(item.price)}
-                        //             color={item.color}
-                        //             numbers={item.numbers}
-                        //             date={formatDate(item.date)}
-                        //             betType={item.type}
-                        //         />
-                        //     )
-                        // })
                     }
                 </ShowBet>
             </Container>

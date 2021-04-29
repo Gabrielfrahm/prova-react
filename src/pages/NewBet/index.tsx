@@ -226,7 +226,7 @@ const NewBet: React.FC = () => {
         }
     }, [dispatch, colorGame, infoGame, numbersUser, addToast]);
 
-    const handleSaveGame = useCallback(() => {
+    const handleSaveGame = useCallback(async () => {
         
         if (Number(cartPrice) >= 30) {
             dispatch(addGamesRequest(itensInCart));
@@ -239,7 +239,7 @@ const NewBet: React.FC = () => {
                     price: item.price
                 })
             })
-            api.post(`/game/bets`, {itemInCart} )
+            await api.post(`/game/bets`, {itemInCart} );
             history.goBack()
             addToast({
                 type: 'success',

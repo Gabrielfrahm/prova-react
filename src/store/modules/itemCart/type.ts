@@ -1,3 +1,4 @@
+
 export enum ActionTypes {
     addProductToCartRequest = 'ADD_PRODUCT_TO_CART_REQUEST',
     addProductToCartSuccess = 'ADD_PRODUCT_TO_CART_SUCCESS',
@@ -15,7 +16,7 @@ export interface Item {
     price: number;
     numbers: string;
     created_at: Date;
-}
+};
 
 export interface CartIState {
     items: Item[];

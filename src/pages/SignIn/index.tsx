@@ -80,7 +80,7 @@ const SignIn: React.FC = () => {
                         <div>
                             <Input name="email" placeholder="Email" />
                             <Input name="password" type="password" placeholder="Password" />
-                            <Link to="/reset-password">I forget my password </Link>
+                            <Link to="/forgot-password">I forget my password </Link>
                             <Button type="submit">Log In  <FiArrowRight style={{ verticalAlign: 'middle' }} /></Button>
                         </div>
                     </Form>

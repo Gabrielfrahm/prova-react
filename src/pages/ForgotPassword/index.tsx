@@ -2,28 +2,25 @@ import React, { useCallback, useRef } from 'react';
 import * as Yup from 'yup';
 import getValidationErrors from '../../utils/getValidationErrors';
 import { Link } from 'react-router-dom';
-import { FiArrowRight, FiArrowLeft, FiAlertCircle } from 'react-icons/fi'
+import { FiArrowRight, FiArrowLeft } from 'react-icons/fi'
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import Footer from '../../components/Footer';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
-import { useSelector } from 'react-redux';
-import { IState } from '../../store';
 import { Container, Content, Presentation } from './styles';
+import api from '../../server/api';
+import { useToast } from '../../hooks/Toast';
 
 interface RestPasswordFormData {
     email: string;
 }
 
-const ResetPassword: React.FC = () => {
+const ForgotPassword: React.FC = () => {
 
     const formRef = useRef<FormHandles>(null);
-
-    const state = useSelector<IState>(state => {
-        return state.auth.erro_singUp;
-    })
+    const { addToast } = useToast();
 
     const handleSubmit = useCallback(
         async (data: RestPasswordFormData) => {
@@ -36,15 +33,25 @@ const ResetPassword: React.FC = () => {
                 await schema.validate(data, {
                     abortEarly: false,
                 });
-                return console.log(data.email)
+                await api.post('/forgot-Password', data);
+                addToast({
+                    type: 'success',
+                    title: 'email enviado com sucesso',
+                    description: 'check sua caixa de mensagem!',
+                });
             } catch (err) {
                 if (err instanceof Yup.ValidationError) {
                     const errors = getValidationErrors(err);
                     formRef.current?.setErrors(errors);
                     return;
                 }
+                addToast({
+                    type: 'error',
+                    title: err.message,
+                    description: 'Ocorreu um erro ao tentar enviar o email de recuperação',
+                });
             }
-        }, [])
+        }, [addToast]);
 
     return (
         <>
@@ -57,10 +64,6 @@ const ResetPassword: React.FC = () => {
                 <Content>
                     <Form ref={formRef} onSubmit={handleSubmit}>
                         <h1>Reset password</h1>
-                        {state &&
-                            <p style={{ color: 'red', display: 'flex', alignItems: 'center', flexDirection: 'column', fontSize: '12px' }}>
-                                <FiAlertCircle size={40} /> {state}
-                            </p>}
                         <div>
                             <Input name="email" placeholder="Email" />
                             <Button type="submit">Send Link  <FiArrowRight style={{ verticalAlign: 'middle' }} /></Button>
@@ -74,4 +77,4 @@ const ResetPassword: React.FC = () => {
     )
 }
 
-export default ResetPassword;
+export default ForgotPassword;
