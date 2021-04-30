@@ -15,6 +15,8 @@ import { formatValue } from '../../utils/formatValue';
 import { formatDate } from '../../utils/formatDate';
 import { loadGames } from '../../store/modules/games/action';
 import api from '../../server/api';
+import Backdrop from '../../components/Backdrop';
+import { Spin } from '../../components/Spinner/styles';
 
 export interface ShowBetsProps {
     id: number;
@@ -47,6 +49,8 @@ const Dashboard: React.FC = () => {
 
     const [gameFind, setGameFind] = useState<ShowBetsProps[]>([]);
 
+    const [showSide, setShowSide] = useState(true);
+
     const history = useHistory();
 
     useEffect(() => {
@@ -69,8 +73,7 @@ const Dashboard: React.FC = () => {
                     setGameFind(response.data)
                 }
             )
-            :
-            []
+            : []
         );
     }, [betsState, gameSelected]);
 
@@ -84,6 +87,10 @@ const Dashboard: React.FC = () => {
         history.push('/new-bet')
     }, [history])
 
+    const handleSideDrawerClosed = useCallback(() => {
+        setShowSide(true);
+    }, []);
+
     return (
         <>
             <Menu />
@@ -91,8 +98,13 @@ const Dashboard: React.FC = () => {
                 <Content>
                     <Title>RECENT GAMES</Title>
                     <span>Filters</span>
-                    {!errorState
-                        ? betsState.map(game => (
+                    {errorState
+                        ?
+                        <Backdrop  show={showSide} clicked={handleSideDrawerClosed}>
+                            <Spin />
+                            <p style={{color: 'red', textAlign: 'center'}}>Ops algo deu errado contante o administrador</p>
+                        </Backdrop>
+                        : betsState.map(game => (
                             <ButtonGames
                                 onClick={() => handleClickedInButtonGame(game.type)}
                                 isActive={gameSelected === game.type ? active : false}
@@ -103,36 +115,41 @@ const Dashboard: React.FC = () => {
                                 {game.type}
                             </ButtonGames>
                         ))
-                        : <p>Erro ao carregar os jogos</p>
                     }
                     <Button onClick={handleToClickInNewBet}>New Bet <FiArrowRight style={{ verticalAlign: 'middle' }} /></Button>
                 </Content>
                 <ShowBet>
 
-                    {!active && games.map(item => (
-                        <Bet
-                            key={uuid()}
-                            price={formatValue(item.price)}
-                            color={item.game.color}
-                            numbers={item.numbers}
-                            date={formatDate(String(item.created_at))}
-                            betType={item.game.type}
-                        />
-                    ))
+                    {
+                        !active && games.length !== 0
+                            ?
+                            games.map(item => (
+                                <Bet
+                                    key={uuid()}
+                                    price={formatValue(item.price)}
+                                    color={item.game.color}
+                                    numbers={item.numbers}
+                                    date={formatDate(String(item.created_at))}
+                                    betType={item.game.type}
+                                />
+                            ))
+                            :
+                            gameSelected !== '' ? null : <p>Empty 😢</p>
                     }
 
-                    {active && gameFind.length === 0
-                        ? <p>Empty 😢 {gameSelected}</p>
-                        : gameFind.map(item => (
-                            <Bet
-                                key={uuid()}
-                                price={formatValue(item.price)}
-                                color={item.game.color}
-                                numbers={item.numbers}
-                                date={formatDate(String(item.created_at))}
-                                betType={item.game.type}
-                            />
-                        ))
+                    {
+                        active && gameFind.length === 0
+                            ? <p>Empty 😢 {gameSelected}</p>
+                            : gameFind.map(item => (
+                                <Bet
+                                    key={uuid()}
+                                    price={formatValue(item.price)}
+                                    color={item.game.color}
+                                    numbers={item.numbers}
+                                    date={formatDate(String(item.created_at))}
+                                    betType={item.game.type}
+                                />
+                            ))
                     }
                 </ShowBet>
             </Container>

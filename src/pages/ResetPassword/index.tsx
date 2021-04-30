@@ -81,14 +81,14 @@ const ResetPassword: React.FC = () => {
                     <span>for</span>
                     <h1>LOTTERY</h1>
                 </Presentation>
-                <Content>
+                <Content> 
                     <Form ref={formRef} onSubmit={handleSubmit}>
                         <h1>Reset password</h1>
                         <div>
                             <Input name="token" type="hidden" />
                             <Input name="password" type="password" placeholder="Password" />
                             <Input name="password_confirmation" type="password" placeholder="confirme sua senha" />
-                            <Button type="submit">Send Link  <FiArrowRight style={{ verticalAlign: 'middle' }} /></Button>
+                            <Button type="submit">Confirmar<FiArrowRight style={{ verticalAlign: 'middle' }} /></Button>
                         </div>
                     </Form>
                     <Link to='/'><FiArrowLeft style={{ verticalAlign: 'middle' }} /> Back</Link>

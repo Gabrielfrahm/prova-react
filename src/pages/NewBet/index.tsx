@@ -38,6 +38,9 @@ import {
 import { useHistory } from 'react-router';
 import api from '../../server/api';
 import { useAuth } from '../../hooks/Auth';
+import Backdrop from '../../components/Backdrop';
+import { Spin } from '../../components/Spinner/styles';
+import { loadGames } from '../../store/modules/games/action';
 
 export interface ItemCartProps {
     user_id: string;
@@ -75,6 +78,8 @@ const NewBet: React.FC = () => {
 
     const history = useHistory();
 
+    const [showSide, setShowSide] = useState(true);
+
     const [active, setActive] = useState(false); //state of active button 
 
     const [gameSelected, setGameSelected] = useState('');//state of game selected to user
@@ -86,6 +91,11 @@ const NewBet: React.FC = () => {
     const [numbers, setNumbers] = useState<number[]>([]);//get numbers of range bet
 
     const [numbersUser, setNumbersUser] = useState<number[]>([]);
+
+    useEffect(() => {
+        dispatch(loadGames());
+    }, [dispatch]);
+
 
     useEffect(() => {//initial bet
         setInfoGame([initialGame]);
@@ -256,6 +266,9 @@ const NewBet: React.FC = () => {
     }, [dispatch, itensInCart, cartPrice, addToast, history, user])
 
 
+    const handleSideDrawerClosed = useCallback(() => {
+        setShowSide(true);
+    }, []);
     return (
         <>
             <Menu />
@@ -265,17 +278,23 @@ const NewBet: React.FC = () => {
                         <Title><strong>NEW BET</strong> FOR {gameSelected?.toUpperCase()}</Title>
                         <strong>Choose a game</strong>
                         <ButtonGamesDiv>
-                            {!errorState
-                                ? betsState.map(game => (
+                            {errorState
+                                ?
+                                <Backdrop show={showSide} clicked={handleSideDrawerClosed}>
+                                    <Spin />
+                                    <p style={{ color: 'red', textAlign: 'center' }}>Ops algo deu errado contante o administrador</p>
+                                </Backdrop>
+                                : betsState.map(game => (
                                     <ButtonGames
                                         onClick={() => handleClickedInButtonGame(game.type)}
-                                        isActive={game.type === gameSelected ? active : false}
+                                        isActive={gameSelected === game.type ? active : false}
                                         type='button'
                                         key={game.type}
                                         color={game.color}
-                                    >{game.type}</ButtonGames>
+                                    >
+                                        {game.type}
+                                    </ButtonGames>
                                 ))
-                                : <p>erro ao carregar os jogos</p>
                             }
                         </ButtonGamesDiv>
                         <span>Fill your bet</span>

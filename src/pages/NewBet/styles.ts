@@ -24,6 +24,7 @@ export const SectionGame = styled.section`
     display: flex;
     justify-content: center;
     flex-direction: column;
+    z-index: 1;
 
     >strong {
         font-size: 17px;

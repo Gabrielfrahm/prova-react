@@ -6,10 +6,10 @@ interface BackdropProps {
     clicked: () => void,
 }
 
-const Backdrop: React.FC<BackdropProps> = ({show, clicked}) => {
+const Backdrop: React.FC<BackdropProps> = ({show, clicked, children}) => {
     
     return (
-        show ? <BackdropDiv onClick={clicked}></BackdropDiv> : null
+        show ? <BackdropDiv onClick={clicked}>{children}</BackdropDiv> : null
     )
 }
 

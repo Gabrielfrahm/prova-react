@@ -17,7 +17,7 @@ export function loadGamesSuccess(bet : GamesProps ){
 }
 export function loadGamesFailure(error : boolean ){
     return {
-        type: ActionTypes.loadGamesSuccess,
+        type: ActionTypes.loadGamesSFailure,
         payload: {
             error,
         }
