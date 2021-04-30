@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import * as Yup from 'yup';
 import getValidationErrors from '../../utils/getValidationErrors';
-import { Link } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { FiArrowRight, FiArrowLeft } from 'react-icons/fi'
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
@@ -13,27 +13,47 @@ import { Container, Content, Presentation } from './styles';
 import api from '../../server/api';
 import { useToast } from '../../hooks/Toast';
 
-interface ForgotPasswordFormData {
-    email: string;
+interface ResetPasswordFormData {
+    password: string;
+    password_confirmation: string;
 }
 
-const ForgotPassword: React.FC = () => {
+const ResetPassword: React.FC = () => {
 
     const formRef = useRef<FormHandles>(null);
     const { addToast } = useToast();
+    const location = useLocation();
+    const history = useHistory();
 
     const handleSubmit = useCallback(
-        async (data: ForgotPasswordFormData) => {
+        async (data: ResetPasswordFormData) => {
             try {
                 formRef.current?.setErrors({});
                 const schema = Yup.object().shape({
-                    email: Yup.string().required('E-mail Obrigatório').email('Digite um Email valido'),
+                    password: Yup.string().required('Senha obrigatória'),
+                    password_confirmation: Yup.string().oneOf(
+                        [Yup.ref('password')],
+                        'as senhas nao batem',
+                    ),
                 });
 
                 await schema.validate(data, {
                     abortEarly: false,
                 });
-                await api.post('/forgot-Password', data);
+
+                const { password, password_confirmation } = data;
+
+                const token = location.search.replace('?token=', '');
+
+                if (!token) {
+                    throw new Error();
+                }
+                await api.put('/reset-password', {
+                    password,
+                    password_confirmation,
+                    token,
+                });
+                history.push('/');
                 addToast({
                     type: 'success',
                     title: 'email enviado com sucesso',
@@ -51,7 +71,7 @@ const ForgotPassword: React.FC = () => {
                     description: 'Ocorreu um erro ao tentar enviar o email de recuperação',
                 });
             }
-        }, [addToast]);
+        }, [addToast, location, history]);
 
     return (
         <>
@@ -65,7 +85,9 @@ const ForgotPassword: React.FC = () => {
                     <Form ref={formRef} onSubmit={handleSubmit}>
                         <h1>Reset password</h1>
                         <div>
-                            <Input name="email" placeholder="Email" />
+                            <Input name="token" type="hidden" />
+                            <Input name="password" type="password" placeholder="Password" />
+                            <Input name="password_confirmation" type="password" placeholder="confirme sua senha" />
                             <Button type="submit">Send Link  <FiArrowRight style={{ verticalAlign: 'middle' }} /></Button>
                         </div>
                     </Form>
@@ -77,4 +99,4 @@ const ForgotPassword: React.FC = () => {
     )
 }
 
-export default ForgotPassword;
+export default ResetPassword;

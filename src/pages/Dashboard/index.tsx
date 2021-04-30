@@ -12,7 +12,7 @@ import { Container, Content, Title, Button, ShowBet } from './styles';
 import { GamesProps } from '../../store/modules/games/types';
 import Bet from '../../components/Bet';
 import { formatValue } from '../../utils/formatValue';
-// import { formatDate } from '../../utils/formatDate';
+import { formatDate } from '../../utils/formatDate';
 import { loadGames } from '../../store/modules/games/action';
 import api from '../../server/api';
 
@@ -45,7 +45,7 @@ const Dashboard: React.FC = () => {
     //state of game selected to user
     const [gameSelected, setGameSelected] = useState('');
 
-    const [filterGame, setFilterGame] = useState<ShowBetsProps[]>([]);
+    const [gameFind, setGameFind] = useState<ShowBetsProps[]>([]);
 
     const history = useHistory();
 
@@ -53,31 +53,32 @@ const Dashboard: React.FC = () => {
         dispatch(loadGames());
     }, [dispatch]);
 
-    const handleFilterGame = useCallback(() => {
-        const game = games.filter(item => {
-            return item.game.type === gameSelected;
-        });
-        setFilterGame(game);
-    }, [games, gameSelected])
-
-    useEffect(() => {//initial bet
-        handleFilterGame();
-    }, [handleFilterGame]);
-
     useEffect(() => {
         api.get('/game/bets').then(
             response => {
-                console.log(response.data);
                 setGames(response.data)
             }
         );
     }, []);
 
+    useEffect(() => {//initial bet
+        betsState.filter(item => item.type === gameSelected ?
+            api.get(`/game/bets/${item.id}`).then(
+                response => {
+                    console.log(response.data)
+                    setGameFind(response.data)
+                }
+            )
+            :
+            []
+        );
+    }, [betsState, gameSelected]);
+
+
     const handleClickedInButtonGame = useCallback((gameName: string) => {
         setGameSelected(gameName);
-
-        setActive(true);
-    }, []);
+        setActive(!active);
+    }, [active]);
 
     const handleToClickInNewBet = useCallback(() => {
         history.push('/new-bet')
@@ -108,25 +109,27 @@ const Dashboard: React.FC = () => {
                 </Content>
                 <ShowBet>
 
-                    {filterGame.length !== 0
-                        ? filterGame.map(item => (
+                    {!active && games.map(item => (
+                        <Bet
+                            key={uuid()}
+                            price={formatValue(item.price)}
+                            color={item.game.color}
+                            numbers={item.numbers}
+                            date={formatDate(String(item.created_at))}
+                            betType={item.game.type}
+                        />
+                    ))
+                    }
+
+                    {active && gameFind.length === 0
+                        ? <p>Empty 😢 {gameSelected}</p>
+                        : gameFind.map(item => (
                             <Bet
                                 key={uuid()}
                                 price={formatValue(item.price)}
                                 color={item.game.color}
                                 numbers={item.numbers}
-                                date={String(item.created_at)}
-                                betType={item.game.type}
-                            />
-                            // <p>Empty 😢 {gameSelected}</p>
-                        ))
-                        : games.map(item => (
-                            <Bet
-                                key={uuid()}
-                                price={formatValue(item.price)}
-                                color={item.game.color}
-                                numbers={item.numbers}
-                                date={item.created_at.toLocaleString()}
+                                date={formatDate(String(item.created_at))}
                                 betType={item.game.type}
                             />
                         ))

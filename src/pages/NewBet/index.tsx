@@ -85,15 +85,7 @@ const NewBet: React.FC = () => {
 
     const [numbers, setNumbers] = useState<number[]>([]);//get numbers of range bet
 
-    const [numbersUser, setNumbersUser] = useState<number[]>([])
-
-    const handleGenerateNumbers = useCallback((range: number) => {//generate numbers of range bets
-        const numberArr = [];
-        for (let i = 1; i <= range; i++) {
-            numberArr.push(i);
-        }
-        return setNumbers(numberArr);
-    }, []);
+    const [numbersUser, setNumbersUser] = useState<number[]>([]);
 
     useEffect(() => {//initial bet
         setInfoGame([initialGame]);
@@ -104,6 +96,14 @@ const NewBet: React.FC = () => {
     useEffect(() => {//after user selected game set information on array 
         setInfoGame(betsState.filter(game => { return gameSelected === game.type }));
     }, [betsState, gameSelected]);
+
+    const handleGenerateNumbers = useCallback((range: number) => {//generate numbers of range bets
+        const numberArr = [];
+        for (let i = 1; i <= range; i++) {
+            numberArr.push(i);
+        }
+        return setNumbers(numberArr);
+    }, []);
 
     useEffect(() => {//run function generate numbers of game
         handleGenerateNumbers(Number(infoGame.map(game => game?.range)));
@@ -227,7 +227,7 @@ const NewBet: React.FC = () => {
     }, [dispatch, colorGame, infoGame, numbersUser, addToast]);
 
     const handleSaveGame = useCallback(async () => {
-        
+
         if (Number(cartPrice) >= 30) {
             dispatch(addGamesRequest(itensInCart));
             const itemInCart: ItemCartProps[] = [];
@@ -235,11 +235,11 @@ const NewBet: React.FC = () => {
                 return itemInCart.push({
                     user_id: user.id,
                     game_id: item.id,
-                    numbers: item.numbers, 
+                    numbers: item.numbers,
                     price: item.price
                 })
             })
-            await api.post(`/game/bets`, {itemInCart} );
+            await api.post(`/game/bets`, { itemInCart });
             history.goBack()
             addToast({
                 type: 'success',
