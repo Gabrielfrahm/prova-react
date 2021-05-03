@@ -49,7 +49,7 @@ const Dashboard: React.FC = () => {
 
     const [gameFind, setGameFind] = useState<ShowBetsProps[]>([]);
 
-    const [showSide, setShowSide] = useState(true);
+    const [show, setShow] = useState(true);
 
     const history = useHistory();
 
@@ -69,7 +69,6 @@ const Dashboard: React.FC = () => {
         betsState.filter(item => item.type === gameSelected ?
             api.get(`/game/bets/${item.id}`).then(
                 response => {
-                    console.log(response.data)
                     setGameFind(response.data)
                 }
             )
@@ -80,16 +79,28 @@ const Dashboard: React.FC = () => {
 
     const handleClickedInButtonGame = useCallback((gameName: string) => {
         setGameSelected(gameName);
+        dispatch(loadGames());
         setActive(!active);
-    }, [active]);
+    }, [active, dispatch]);
 
     const handleToClickInNewBet = useCallback(() => {
         history.push('/new-bet')
     }, [history])
 
-    const handleSideDrawerClosed = useCallback(() => {
-        setShowSide(true);
-    }, []);
+    const handleDrawerClosed = useCallback(() => {
+        if(errorState  ){
+            dispatch(loadGames());
+            api.get('/game/bets').then(
+                response => {
+                    setGames(response.data)
+                }
+            );
+            
+        }else{
+            // setShow(true);
+            setShow(false);
+        }
+    }, [errorState, dispatch, ]);
 
     return (
         <>
@@ -100,9 +111,9 @@ const Dashboard: React.FC = () => {
                     <span>Filters</span>
                     {errorState
                         ?
-                        <Backdrop  show={showSide} clicked={handleSideDrawerClosed}>
+                        <Backdrop  show={show} clicked={handleDrawerClosed}>
                             <Spin />
-                            <p style={{color: 'red', textAlign: 'center'}}>Ops algo deu errado contante o administrador</p>
+                            <p style={{color: 'red', textAlign: 'center'}}>Ops algo deu errado contate o administrador</p>
                         </Backdrop>
                         : betsState.map(game => (
                             <ButtonGames
@@ -139,7 +150,7 @@ const Dashboard: React.FC = () => {
 
                     {
                         active && gameFind.length === 0
-                            ? <p>Empty 😢 {gameSelected}</p>
+                            ? <p>Empty 😢{gameSelected}</p>
                             : gameFind.map(item => (
                                 <Bet
                                     key={uuid()}

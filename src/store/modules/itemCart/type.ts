@@ -20,7 +20,7 @@ export interface Item {
 
 export interface CartIState {
     items: Item[];
-    error: string; 
+    error: boolean; 
     price: number;
     bets: Item[]
 }

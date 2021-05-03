@@ -10,7 +10,7 @@ import { IState } from '../../store';
 import { FiArrowRight, FiShoppingCart } from 'react-icons/fi';
 
 import ItemCart from '../../components/ItemCart';
-import { addProductToCartRequest, addGamesRequest } from '../../store/modules/itemCart/action';
+import { addProductToCartRequest, addGamesRequest, addGamesFailure } from '../../store/modules/itemCart/action';
 import { Item } from '../../store/modules/itemCart/type';
 import { formatValue } from '../../utils/formatValue';
 import { compareNumbers } from '../../utils/formSortArray';
@@ -29,7 +29,6 @@ import {
     WrapperCartItem,
     TotalDiv,
     FinalText,
-    FinalButton,
     ButtonsDiv,
     ButtonsGenerate,
     ButtonAddCart,
@@ -41,6 +40,7 @@ import { useAuth } from '../../hooks/Auth';
 import Backdrop from '../../components/Backdrop';
 import { Spin } from '../../components/Spinner/styles';
 import { loadGames } from '../../store/modules/games/action';
+import Button from '../../components/Button';
 
 export interface ItemCartProps {
     user_id: string;
@@ -53,6 +53,10 @@ const NewBet: React.FC = () => {
 
     const errorState = useSelector<IState>(state => {//error of api state
         return state.games.error;
+    });
+
+    const erroStateItemCart =  useSelector<IState>(state => {//error of api state
+        return state.itemCart.error;
     });
 
     const betsState = useSelector<IState, GamesProps[]>(state => {//array bets
@@ -78,7 +82,8 @@ const NewBet: React.FC = () => {
 
     const history = useHistory();
 
-    const [showSide, setShowSide] = useState(true);
+    const [show, setShow] = useState(true);
+    const [load, setLoad] = useState(false);
 
     const [active, setActive] = useState(false); //state of active button 
 
@@ -94,8 +99,8 @@ const NewBet: React.FC = () => {
 
     useEffect(() => {
         dispatch(loadGames());
+        setShow(true)
     }, [dispatch]);
-
 
     useEffect(() => {//initial bet
         setInfoGame([initialGame]);
@@ -237,9 +242,9 @@ const NewBet: React.FC = () => {
     }, [dispatch, colorGame, infoGame, numbersUser, addToast]);
 
     const handleSaveGame = useCallback(async () => {
-
+        setLoad(true);
         if (Number(cartPrice) >= 30) {
-            dispatch(addGamesRequest(itensInCart));
+            
             const itemInCart: ItemCartProps[] = [];
             itensInCart.map(item => {
                 return itemInCart.push({
@@ -248,27 +253,44 @@ const NewBet: React.FC = () => {
                     numbers: item.numbers,
                     price: item.price
                 })
-            })
-            await api.post(`/game/bets`, { itemInCart });
-            history.goBack()
-            addToast({
-                type: 'success',
-                title: 'jogos salvos',
-            })
+            });
+            
+            await api.post(`/game/bets`, { itemInCart }).then(
+                response => {
+                    if(response.data){
+                        dispatch(addGamesRequest(itensInCart));
+                        addToast({
+                            type: 'success',
+                            title: 'apostas realizadas',
+                        });
+                        setLoad(false);
+                        history.goBack();
+                    }   
+                }
+            ).catch(err => {
+                return dispatch(addGamesFailure(err.message))
+            });
+            
         }
         if (Number(cartPrice) < 30) {
             addToast({
-                type: 'error',
+                type: 'error', 
                 title: 'faça jogos, ate chegar no valor de R$ 30,00',
             })
         }
-
     }, [dispatch, itensInCart, cartPrice, addToast, history, user])
 
 
-    const handleSideDrawerClosed = useCallback(() => {
-        setShowSide(true);
-    }, []);
+    const handleDrawerClosed = useCallback(() => {
+        if(errorState || erroStateItemCart ){
+            dispatch(loadGames());
+            dispatch(addGamesFailure(false));
+            setLoad(false);
+        }else{
+            // setShow(true);
+            setShow(false);
+        }
+    }, [errorState, erroStateItemCart , dispatch]);
     return (
         <>
             <Menu />
@@ -278,11 +300,11 @@ const NewBet: React.FC = () => {
                         <Title><strong>NEW BET</strong> FOR {gameSelected?.toUpperCase()}</Title>
                         <strong>Choose a game</strong>
                         <ButtonGamesDiv>
-                            {errorState
+                            {errorState || erroStateItemCart
                                 ?
-                                <Backdrop show={showSide} clicked={handleSideDrawerClosed}>
+                                <Backdrop show={show} clicked={handleDrawerClosed}>
                                     <Spin />
-                                    <p style={{ color: 'red', textAlign: 'center' }}>Ops algo deu errado contante o administrador</p>
+                                    <p style={{ color: 'red', textAlign: 'center' }}>Ops algo deu errado contate o administrador</p>
                                 </Backdrop>
                                 : betsState.map(game => (
                                     <ButtonGames
@@ -340,7 +362,8 @@ const NewBet: React.FC = () => {
                             <strong>CART</strong>
                             <FinalText>Total:{formatValue(Number(cartPrice))}</FinalText>
                         </TotalDiv>
-                        <FinalButton onClick={handleSaveGame} >Save <FiArrowRight style={{ verticalAlign: 'middle' }} /></FinalButton>
+                        {/* <FinalButton onClick={handleSaveGame} >Save <FiArrowRight style={{ verticalAlign: 'middle' }} /></FinalButton> */}
+                        <Button loading={load} onClick={handleSaveGame} >Save <FiArrowRight style={{ verticalAlign: 'middle' }} /></Button>
                     </SectionCart>
                 </Content>
             </Container>

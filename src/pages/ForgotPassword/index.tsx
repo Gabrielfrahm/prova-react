@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import * as Yup from 'yup';
 import getValidationErrors from '../../utils/getValidationErrors';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { FiArrowRight, FiArrowLeft } from 'react-icons/fi'
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
@@ -21,6 +21,7 @@ const ForgotPassword: React.FC = () => {
 
     const formRef = useRef<FormHandles>(null);
     const { addToast } = useToast();
+    const history = useHistory();
 
     const handleSubmit = useCallback(
         async (data: ForgotPasswordFormData) => {
@@ -34,6 +35,7 @@ const ForgotPassword: React.FC = () => {
                     abortEarly: false,
                 });
                 await api.post('/forgot-Password', data);
+                history.push('/');
                 addToast({
                     type: 'success',
                     title: 'email enviado com sucesso',
@@ -51,7 +53,7 @@ const ForgotPassword: React.FC = () => {
                     description: 'Ocorreu um erro ao tentar enviar o email de recuperação',
                 });
             }
-        }, [addToast]);
+        }, [addToast, history]);
 
     return (
         <>
@@ -66,7 +68,7 @@ const ForgotPassword: React.FC = () => {
                         <h1>Reset password</h1>
                         <div>
                             <Input name="email" placeholder="Email" />
-                            <Button type="submit">Send Link  <FiArrowRight style={{ verticalAlign: 'middle' }} /></Button>
+                            <Button type="submit">Send Link<FiArrowRight style={{ verticalAlign: 'middle' }} /></Button>
                         </div>
                     </Form>
                     <Link to='/'><FiArrowLeft style={{ verticalAlign: 'middle' }} /> Back</Link>

@@ -1,4 +1,7 @@
-import { all, takeLatest, put } from 'redux-saga/effects';
+import { AxiosResponse } from 'axios';
+import { all, takeLatest, put, call } from 'redux-saga/effects';
+import api from '../../../server/api';
+import { GamesProps } from '../games/types';
 import { addGamesFailure, addGamesRequest, addGamesSuccess, addProductToCartFailure, addProductToCartRequest, addProductToCartSuccess } from './action';
 import { ActionTypes } from './type';
 
@@ -17,12 +20,16 @@ function* checkItemCart({ payload }: checkItemRequest) {
 
 function* checkBetCart({ payload }: checkBetRequest) {
     const { item } = payload;
+    const availableSGamesResponse: AxiosResponse<GamesProps> = yield call(api.get, "/games");
+
     try {
-        if (item) {
+        if (availableSGamesResponse.data) {
             yield put(addGamesSuccess(item))
+        }else {
+            yield put(addGamesFailure(true))
         }
     } catch (err) {
-        yield put(addGamesFailure('error ao tentar inserir a compra'))
+        yield put(addGamesFailure(true))
     }
 }
 

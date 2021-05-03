@@ -5,7 +5,7 @@ import { ActionTypes, CartIState  } from "./type";
 
 const INITIAL_STATE: CartIState = {
     items: [],
-    error: '',
+    error: false,
     price : 0,
     bets: []
 }
@@ -21,9 +21,9 @@ const cart: Reducer<CartIState> = (state = INITIAL_STATE, action) => {
                 if(!checkNumbers){
                     draft.items.push(item);
                     draft.price = (draft.price + item.price);
-                    draft.error= '';
+                    draft.error= false;
                 }else {
-                    draft.error = 'voce ja tem esse jogo no carrinho'
+                    draft.error = true
                 }
                 break;
             }
@@ -49,7 +49,7 @@ const cart: Reducer<CartIState> = (state = INITIAL_STATE, action) => {
                     draft.items = [];
                     draft.price = 0;
                 }else{
-                    draft.error = 'no minimo 30 reais';
+                    draft.error = true;
                 }
                 break;
             }

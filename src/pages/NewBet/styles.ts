@@ -185,6 +185,22 @@ export const SectionCart = styled.section`
     border-radius: 10px;
     margin-bottom: 20px;
 
+    >button {
+        width: 100%;
+        height: 96px;
+        border: none;
+        border-radius: 10px;
+        color: #27C383;
+        font-size: 32px;
+        font-weight: bold;
+        background-color:#E2E2E2;
+
+        &:hover{
+            background-color: ${shade(0.1, `#F7F7F7`)};
+            color: ${lighten(0.1, `#27C383`)};
+        }
+    }
+
     @media (max-width: 1024px){
         margin-bottom: 80px;
     }

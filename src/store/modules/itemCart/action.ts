@@ -56,7 +56,7 @@ export function addGamesSuccess(item: Item[]){
     };
 }
 
-export function addGamesFailure(error: string){
+export function addGamesFailure(error: boolean){
     return {
         type: ActionTypes.addGamesFailure,
         payload: {
