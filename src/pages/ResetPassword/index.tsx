@@ -88,7 +88,7 @@ const ResetPassword: React.FC = () => {
                             <Input name="token" type="hidden" />
                             <Input name="password" type="password" placeholder="Password" />
                             <Input name="password_confirmation" type="password" placeholder="confirme sua senha" />
-                            <Button type="submit">Confirmar<FiArrowRight style={{ verticalAlign: 'middle' }} /></Button>
+                            <Button type="submit">Confirm<FiArrowRight style={{ verticalAlign: 'middle' }} /></Button>
                         </div>
                     </Form>
                     <Link to='/'><FiArrowLeft style={{ verticalAlign: 'middle' }} /> Back</Link>

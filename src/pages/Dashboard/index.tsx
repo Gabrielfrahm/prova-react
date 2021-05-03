@@ -16,7 +16,7 @@ import { formatDate } from '../../utils/formatDate';
 import { loadGames } from '../../store/modules/games/action';
 import api from '../../server/api';
 import Backdrop from '../../components/Backdrop';
-import { Spin } from '../../components/Spinner/styles';
+
 
 export interface ShowBetsProps {
     id: number;
@@ -76,7 +76,6 @@ const Dashboard: React.FC = () => {
         );
     }, [betsState, gameSelected]);
 
-
     const handleClickedInButtonGame = useCallback((gameName: string) => {
         setGameSelected(gameName);
         dispatch(loadGames());
@@ -112,8 +111,9 @@ const Dashboard: React.FC = () => {
                     {errorState
                         ?
                         <Backdrop  show={show} clicked={handleDrawerClosed}>
-                            <Spin />
-                            <p style={{color: 'red', textAlign: 'center'}}>Ops algo deu errado contate o administrador</p>
+                            <p style={{color: 'red', display:'flex', height: '50px', justifyContent:'center', alignItems: 'center', backgroundColor:'white', fontWeight: 'bold', marginTop: '400px'}}>
+                                Ops algo deu errado, clique na tela, caso nao funcione,contate o administrador
+                            </p>
                         </Backdrop>
                         : betsState.map(game => (
                             <ButtonGames

@@ -38,7 +38,7 @@ import { useHistory } from 'react-router';
 import api from '../../server/api';
 import { useAuth } from '../../hooks/Auth';
 import Backdrop from '../../components/Backdrop';
-import { Spin } from '../../components/Spinner/styles';
+
 import { loadGames } from '../../store/modules/games/action';
 import Button from '../../components/Button';
 
@@ -55,7 +55,7 @@ const NewBet: React.FC = () => {
         return state.games.error;
     });
 
-    const erroStateItemCart =  useSelector<IState>(state => {//error of api state
+    const erroStateItemCart = useSelector<IState>(state => {//error of api state
         return state.itemCart.error;
     });
 
@@ -242,9 +242,9 @@ const NewBet: React.FC = () => {
     }, [dispatch, colorGame, infoGame, numbersUser, addToast]);
 
     const handleSaveGame = useCallback(async () => {
-        setLoad(true);
+
         if (Number(cartPrice) >= 30) {
-            
+            setLoad(true);
             const itemInCart: ItemCartProps[] = [];
             itensInCart.map(item => {
                 return itemInCart.push({
@@ -254,10 +254,10 @@ const NewBet: React.FC = () => {
                     price: item.price
                 })
             });
-            
+
             await api.post(`/game/bets`, { itemInCart }).then(
                 response => {
-                    if(response.data){
+                    if (response.data) {
                         dispatch(addGamesRequest(itensInCart));
                         addToast({
                             type: 'success',
@@ -265,16 +265,16 @@ const NewBet: React.FC = () => {
                         });
                         setLoad(false);
                         history.goBack();
-                    }   
+                    }
                 }
             ).catch(err => {
                 return dispatch(addGamesFailure(err.message))
             });
-            
+
         }
         if (Number(cartPrice) < 30) {
             addToast({
-                type: 'error', 
+                type: 'error',
                 title: 'faça jogos, ate chegar no valor de R$ 30,00',
             })
         }
@@ -282,15 +282,15 @@ const NewBet: React.FC = () => {
 
 
     const handleDrawerClosed = useCallback(() => {
-        if(errorState || erroStateItemCart ){
+        if (errorState || erroStateItemCart) {
             dispatch(loadGames());
             dispatch(addGamesFailure(false));
             setLoad(false);
-        }else{
+        } else {
             // setShow(true);
             setShow(false);
         }
-    }, [errorState, erroStateItemCart , dispatch]);
+    }, [errorState, erroStateItemCart, dispatch]);
     return (
         <>
             <Menu />
@@ -303,8 +303,9 @@ const NewBet: React.FC = () => {
                             {errorState || erroStateItemCart
                                 ?
                                 <Backdrop show={show} clicked={handleDrawerClosed}>
-                                    <Spin />
-                                    <p style={{ color: 'red', textAlign: 'center' }}>Ops algo deu errado contate o administrador</p>
+                                    <p style={{ color: 'red', display: 'flex', height: '50px', justifyContent: 'center', alignItems: 'center', backgroundColor: 'white', fontWeight: 'bold', marginTop: '400px' }}>
+                                        Ops algo deu errado, clique na tela, caso nao funcione,contate o administrador
+                                    </p>
                                 </Backdrop>
                                 : betsState.map(game => (
                                     <ButtonGames
